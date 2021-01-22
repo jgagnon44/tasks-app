@@ -1,0 +1,13 @@
+.project
+.settings
+.classpath
+.factorypath
+
+**/data/
+**/target/
+**/node_modules
+
+**/*.json
+**/*.xlsx
+**/*.txt
+**/*.js

@@ -1,0 +1,15 @@
+package com.fossfloors.taskapp.backend.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.fossfloors.taskapp.backend.beans.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+  public User findByUserName(String userName);
+
+  public User findByEmail(String email);
+
+  public User findByEmailAndUserName(String email, String userName);
+
+}
