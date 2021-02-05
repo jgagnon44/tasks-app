@@ -1,7 +1,6 @@
 package com.fossfloors.taskapp.backend.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,8 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import com.fossfloors.taskapp.util.DateTimeUtil;
 
 // @NamedEntityGraphs({
 // @NamedEntityGraph(name = "graph.task.notes", attributeNodes = @NamedAttributeNode("notes")),
@@ -39,32 +36,34 @@ public class Task extends AbstractEntity {
 
   @NotNull
   @NotEmpty
-  private String                   title;
+  private String         title;
 
-  private String                   description;
-
-  @NotNull
-  @Enumerated(EnumType.STRING)
-  private TaskType                 type;
+  private String         description;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskState                state;
+  private TaskType       type;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskPriority             priority;
+  private TaskState      state;
+
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private TaskPriority   priority;
 
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-  private List<StateChangeHistory> stateHistory = new ArrayList<>();
+  private List<TaskNote> notes = new ArrayList<>();
 
-  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-  private List<TaskNote>           notes        = new ArrayList<>();
+  // private Date dateClosed;
+  // private Date dateDue;
+  // private Date dateStarted;
+  // private Date dateCompleted;
 
-  private Date                     dateClosed;
-  private Date                     dateDue;
-  private Date                     dateStarted;
-  private Date                     dateCompleted;
+  private Long           dateClosed;
+  private Long           dateDue;
+  private Long           dateStarted;
+  private Long           dateCompleted;
 
   public Task() {
     super();
@@ -120,14 +119,6 @@ public class Task extends AbstractEntity {
     this.priority = priority;
   }
 
-  public List<StateChangeHistory> getStateHistory() {
-    return stateHistory;
-  }
-
-  public void setStateHistory(List<StateChangeHistory> stateHistory) {
-    this.stateHistory = stateHistory;
-  }
-
   public List<TaskNote> getNotes() {
     return notes;
   }
@@ -136,49 +127,76 @@ public class Task extends AbstractEntity {
     this.notes = notes;
   }
 
-  public Date getDateClosed() {
+  // public Date getDateClosed() {
+  // return dateClosed;
+  // }
+  //
+  // public void setDateClosed(Date dateClosed) {
+  // this.dateClosed = dateClosed;
+  // }
+  //
+  // public Date getDateDue() {
+  // return dateDue;
+  // }
+  //
+  // public void setDateDue(Date dateDue) {
+  // this.dateDue = dateDue;
+  // }
+  //
+  // public Date getDateStarted() {
+  // return dateStarted;
+  // }
+  //
+  // public void setDateStarted(Date dateStarted) {
+  // this.dateStarted = dateStarted;
+  // }
+  //
+  // public Date getDateCompleted() {
+  // return dateCompleted;
+  // }
+  //
+  // public void setDateCompleted(Date dateCompleted) {
+  // this.dateCompleted = dateCompleted;
+  // }
+
+  public Long getDateClosed() {
     return dateClosed;
   }
 
-  public void setDateClosed(Date dateClosed) {
+  public void setDateClosed(Long dateClosed) {
     this.dateClosed = dateClosed;
   }
 
-  public Date getDateDue() {
+  public Long getDateDue() {
     return dateDue;
   }
 
-  public void setDateDue(Date dateDue) {
+  public void setDateDue(Long dateDue) {
     this.dateDue = dateDue;
   }
 
-  public Date getDateStarted() {
+  public Long getDateStarted() {
     return dateStarted;
   }
 
-  public void setDateStarted(Date dateStarted) {
+  public void setDateStarted(Long dateStarted) {
     this.dateStarted = dateStarted;
   }
 
-  public Date getDateCompleted() {
+  public Long getDateCompleted() {
     return dateCompleted;
   }
 
-  public void setDateCompleted(Date dateCompleted) {
+  public void setDateCompleted(Long dateCompleted) {
     this.dateCompleted = dateCompleted;
-  }
-  
-  public int getNotesCount() {
-    return notes.size();
   }
 
   @Override
   public String toString() {
     return "Task [title=" + title + ", description=" + description + ", type=" + type + ", state="
-        + state + ", priority=" + priority + ", stateHistory=" + stateHistory + ", notes=" + notes
-        + ", dateClosed=" + DateTimeUtil.format(dateClosed) + ", dateDue="
-        + DateTimeUtil.format(dateDue) + ", dateStarted=" + DateTimeUtil.format(dateStarted)
-        + ", dateCompleted=" + DateTimeUtil.format(dateCompleted) + "]";
+        + state + ", priority=" + priority + ", notes=" + notes + ", dateClosed=" + dateClosed
+        + ", dateDue=" + dateDue + ", dateStarted=" + dateStarted + ", dateCompleted="
+        + dateCompleted + "]";
   }
 
   @Override
@@ -193,7 +211,6 @@ public class Task extends AbstractEntity {
     result = prime * result + ((notes == null) ? 0 : notes.hashCode());
     result = prime * result + ((priority == null) ? 0 : priority.hashCode());
     result = prime * result + ((state == null) ? 0 : state.hashCode());
-    result = prime * result + ((stateHistory == null) ? 0 : stateHistory.hashCode());
     result = prime * result + ((title == null) ? 0 : title.hashCode());
     result = prime * result + ((type == null) ? 0 : type.hashCode());
     return result;
@@ -241,11 +258,6 @@ public class Task extends AbstractEntity {
     if (priority != other.priority)
       return false;
     if (state != other.state)
-      return false;
-    if (stateHistory == null) {
-      if (other.stateHistory != null)
-        return false;
-    } else if (!stateHistory.equals(other.stateHistory))
       return false;
     if (title == null) {
       if (other.title != null)

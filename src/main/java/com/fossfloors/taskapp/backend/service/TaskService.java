@@ -1,6 +1,7 @@
 package com.fossfloors.taskapp.backend.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fossfloors.taskapp.backend.beans.TaskFilterSpec;
-import com.fossfloors.taskapp.backend.entity.StateChangeHistory;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.backend.entity.Task.TaskPriority;
@@ -28,6 +28,10 @@ public class TaskService {
 
   public TaskService(TaskRepository taskRepo) {
     this.taskRepo = taskRepo;
+  }
+
+  public Optional<Task> findById(long id) {
+    return taskRepo.findById(id);
   }
 
   public List<Task> findAll() {
@@ -56,12 +60,26 @@ public class TaskService {
     taskRepo.save(task);
   }
 
+  // public void newNoteFor(Task task) {
+  // task.getNotes().add(new TaskNote("new note"));
+  // save(task);
+  // }
+
+  public void addNote(Task task, TaskNote note) {
+    task.getNotes().add(note);
+    save(task);
+  }
+
+  public void deleteNote(Task task, TaskNote note) {
+    task.getNotes().remove(note);
+    save(task);
+  }
+
   @PostConstruct
   public void populateTestData() {
     if (taskRepo.count() == 0) {
       Task task = null;
       TaskNote note = null;
-      StateChangeHistory history = null;
 
       // Task 1
       task = new Task("Task-1");
@@ -80,11 +98,6 @@ public class TaskService {
       note.setNote("note-2");
       task.getNotes().add(note);
 
-      history = new StateChangeHistory();
-      history.setTask(task);
-      history.setNewState(TaskState.OPEN);
-      task.getStateHistory().add(history);
-
       taskRepo.save(task);
 
       // Task 2
@@ -92,12 +105,6 @@ public class TaskService {
       task.setPriority(TaskPriority.LOW);
       task.setType(TaskType.ONE_TIME);
       task.setState(TaskState.CLOSED);
-
-      history = new StateChangeHistory();
-      history.setTask(task);
-      history.setOldState(TaskState.OPEN);
-      history.setNewState(TaskState.CLOSED);
-      task.getStateHistory().add(history);
 
       taskRepo.save(task);
     }

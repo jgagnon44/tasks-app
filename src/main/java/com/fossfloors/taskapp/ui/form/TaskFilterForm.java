@@ -36,6 +36,10 @@ public class TaskFilterForm extends HorizontalLayout {
     return getEventBus().addListener(eventType, listener);
   }
 
+  public void refresh() {
+    fireEvent(new FilterChangedEvent(this, binder.getBean()));
+  }
+
   private void configureView() {
     stateFilter = new ComboBox<>();
     stateFilter.setLabel("Task State");
@@ -55,7 +59,7 @@ public class TaskFilterForm extends HorizontalLayout {
     binder.setBean(new TaskFilterSpec());
     binder.bindInstanceFields(this);
     binder.addValueChangeListener(event -> {
-      fireEvent(new FilterChangedEvent(this, binder.getBean()));
+      refresh();
     });
   }
 

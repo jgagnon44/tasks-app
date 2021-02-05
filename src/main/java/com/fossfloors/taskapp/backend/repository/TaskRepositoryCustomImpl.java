@@ -1,6 +1,7 @@
 package com.fossfloors.taskapp.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,22 +26,27 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
 
   // @formatter:off
   @Override
+  public Optional<Task> findById(long id) {
+    Task task = entityManager
+        .createQuery("select distinct t from Task t left join fetch t.notes where t.id=:id",
+            Task.class)
+        .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+        .setParameter("id", id)
+        .getSingleResult();
+
+    Optional<Task> result = Optional.of(task);
+    return result;
+  }
+  // @formatter:on
+
+  // @formatter:off
+  @Override
   public List<Task> findAll() {
 //    EntityGraph<?> graph = entityManager.getEntityGraph("graph.task");
 
     List<Task> tasks = entityManager
         .createQuery("select distinct t from Task t " +
             "left join fetch t.notes", Task.class)
-//        .setHint("javax.persistence.fetchgraph", graph)
-        .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
-//        .setHint(GraphSemantic.FETCH.getJpaHintName(), graph)
-        .getResultList();
-    
-    tasks = entityManager
-        .createQuery("select distinct t from Task t " +
-            "left join fetch t.stateHistory h " +
-            "where t in :tasks", Task.class)
-        .setParameter("tasks", tasks)
 //        .setHint("javax.persistence.fetchgraph", graph)
         .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
 //        .setHint(GraphSemantic.FETCH.getJpaHintName(), graph)
@@ -57,15 +63,6 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
             "left join fetch t.notes n " +
             "where 1=1" +
             buildFilterWhereClause(filter), Task.class)
-        .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
-        .getResultList();
-    
-    tasks = entityManager
-        .createQuery("select distinct t from Task t " +
-            "left join fetch t.stateHistory h " +
-            "where t in :tasks" +
-            buildFilterWhereClause(filter), Task.class)
-        .setParameter("tasks", tasks)
         .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
         .getResultList();
     

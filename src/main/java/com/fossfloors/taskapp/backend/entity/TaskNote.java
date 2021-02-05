@@ -19,6 +19,11 @@ public class TaskNote extends AbstractEntity {
     super();
   }
 
+  public TaskNote(String note) {
+    super();
+    this.note = note;
+  }
+
   public Task getTask() {
     return task;
   }

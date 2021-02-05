@@ -1,12 +1,16 @@
 package com.fossfloors.taskapp.ui.view;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
-import com.fossfloors.taskapp.backend.service.TaskNoteService;
+import com.fossfloors.taskapp.backend.service.TaskService;
+import com.fossfloors.taskapp.ui.form.EditNoteForm;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -16,23 +20,50 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 
+@Route("notes")
 @CssImport("./styles/shared-styles.css")
 @SuppressWarnings("serial")
-public class NotesListView extends VerticalLayout {
+public class NotesListView extends VerticalLayout implements HasUrlParameter<Long> {
 
-  private static final Logger   logger = LoggerFactory.getLogger(NotesListView.class);
+  private static final Logger logger     = LoggerFactory.getLogger(NotesListView.class);
 
-  private final TaskNoteService noteService;
+  private final TaskService   taskService;
 
-  private Grid<TaskNote>        grid   = new Grid<>(TaskNote.class);
+  private Grid<TaskNote>      grid;
 
-  public NotesListView(TaskNoteService noteService) {
-    this.noteService = noteService;
+  private Button              addButton;
+
+  private EditNoteForm        editForm;
+
+  private Task                parentTask;
+
+  public NotesListView(TaskService taskService) {
+    this.taskService = taskService;
+
     addClassName("notes-list-view");
     setSizeFull();
+
     configureView();
+
+    editForm.addListener(EditNoteForm.SaveEvent.class, this::saveNote);
+    editForm.addListener(EditNoteForm.DeleteEvent.class, this::deleteNote);
+    editForm.addListener(EditNoteForm.CancelEvent.class, event -> closeEditor());
+
+    updateButtonEnablement();
+  }
+
+  @Override
+  public void setParameter(BeforeEvent event, Long parameter) {
+    Optional<Task> optTask = taskService.findById(parameter);
+    optTask.ifPresent(c -> parentTask = optTask.get());
+
+    refreshNotes();
+    updateButtonEnablement();
   }
 
   @Override
@@ -41,59 +72,90 @@ public class NotesListView extends VerticalLayout {
     return getEventBus().addListener(eventType, listener);
   }
 
-  public void loadNotes(TaskListView.TaskSelectionEvent event) {
-    if (event.getSelected() != null) {
-      grid.setItems(event.getSelected().getNotes());
+  private void configureView() {
+    configureGrid();
+    editForm = new EditNoteForm();
+    addButton = new Button("Add", this::add);
+    
+    add(addButton, grid, editForm);
+
+    closeEditor();
+  }
+
+  private void saveNote(EditNoteForm.SaveEvent event) {
+    taskService.addNote(parentTask, event.getTaskNote());
+    closeEditor();
+  }
+
+  private void deleteNote(EditNoteForm.DeleteEvent event) {
+    taskService.deleteNote(parentTask, event.getTaskNote());
+    closeEditor();
+  }
+
+  private void refreshNotes() {
+    if (parentTask != null) {
+      grid.setItems(parentTask.getNotes());
     } else {
-      grid.setItems(new ArrayList<>());
+      grid.setItems();
     }
   }
 
-  private void configureView() {
-    configureGrid();
-    add(configButtonPanel(), grid);
-  }
-
-  private Component configButtonPanel() {
-    HorizontalLayout layout = new HorizontalLayout();
-
-    Button addButton = new Button("Add", this::add);
-    Button deleteButton = new Button("Delete", this::delete);
-
-    layout.add(addButton, deleteButton);
-    return layout;
+  private void updateButtonEnablement() {
+    addButton.setEnabled(parentTask != null);
   }
 
   private void configureGrid() {
+    grid = new Grid<>();
     grid.addClassName("notes-grid");
 
-    grid.setColumns("note", "dateCreated");
-    grid.getColumns().forEach(col -> col.setAutoWidth(true));
+    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    grid.addColumn(bean -> formatter.format(new Date(bean.getDateCreated()))).setHeader("Created")
+        .setSortable(true);
+
+    grid.addColumn(TaskNote::getNote).setHeader("Note").setSortable(true);
+
+    grid.getColumns().forEach(col -> {
+      col.setAutoWidth(true);
+      col.setResizable(true);
+    });
 
     grid.asSingleSelect().addValueChangeListener(event -> {
-      fireEvent(new NoteSelectionEvent(this, event.getValue()));
+      editNote(event.getValue());
     });
   }
 
+  private void editNote(TaskNote note) {
+    if (note != null) {
+      editForm.setTaskNote(note);
+      editForm.setVisible(true);
+      addClassName("editing-note");
+    } else {
+      closeEditor();
+    }
+  }
+
+  private void closeEditor() {
+    grid.asSingleSelect().clear();
+    editForm.setTaskNote(null);
+    editForm.setVisible(false);
+    removeClassName("editing-note");
+    refreshNotes();
+  }
+
   private void add(ClickEvent<?> event) {
-    // TODO
+    grid.asSingleSelect().clear();
+    editNote(new TaskNote());
+
+    // taskService.newNoteFor(parentTask);
+    // refreshNotes();
   }
 
-  private void delete(ClickEvent<?> event) {
-    // TODO
-  }
-
-  public static class NoteSelectionEvent extends ComponentEvent<NotesListView> {
-    private TaskNote selected;
-
-    public NoteSelectionEvent(NotesListView source, TaskNote selected) {
-      super(source, false);
-      this.selected = selected;
-    }
-
-    public TaskNote getSelected() {
-      return selected;
-    }
-  }
+  // private void delete(ClickEvent<?> event) {
+  // if (selected != null) {
+  // // TODO need confirmation/cancel dialog
+  // taskService.deleteNoteFor(parentTask, selected);
+  // refreshNotes();
+  // }
+  // }
 
 }

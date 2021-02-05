@@ -17,10 +17,10 @@ public abstract class AbstractEntity {
   private Long   id;
 
   @NotNull
-  private long   dateCreated;
+  private Long   dateCreated;
 
   @NotNull
-  private long   dateModified;
+  private Long   dateModified;
 
   @NotNull
   @NotEmpty
@@ -43,19 +43,19 @@ public abstract class AbstractEntity {
     return id;
   }
 
-  public long getDateCreated() {
+  public Long getDateCreated() {
     return dateCreated;
   }
 
-  public void setDateCreated(long dateCreated) {
+  public void setDateCreated(Long dateCreated) {
     this.dateCreated = dateCreated;
   }
 
-  public long getDateModified() {
+  public Long getDateModified() {
     return dateModified;
   }
 
-  public void setDateModified(long dateModified) {
+  public void setDateModified(Long dateModified) {
     this.dateModified = dateModified;
   }
 
