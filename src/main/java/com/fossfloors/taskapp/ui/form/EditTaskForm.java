@@ -1,5 +1,7 @@
 package com.fossfloors.taskapp.ui.form;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,23 +35,30 @@ public class EditTaskForm extends VerticalLayout {
 
   private TextField                   title;
   private TextArea                    description;
+
   private ComboBox<Task.TaskType>     type;
   private ComboBox<Task.TaskPriority> priority;
   private TextField                   notesCount;
+  private Button                      editNotesButton;
+
   private TextField                   dateCreated;
   private TextField                   dateModified;
   private DatePicker                  dateDue;
   private DatePicker                  dateStarted;
   private DatePicker                  dateCompleted;
 
-  private Button                      editNotesButton;
   private Button                      saveButton;
   private Button                      deleteButton;
-  private Button                      cancelButton;
+  private Button                      closeButton;
+  private ComboBox<TaskAction>        otherActions;
 
   private Binder<Task>                binder;
 
   private Task                        task;
+
+  public enum TaskAction {
+    CLOSE, REOPEN, ARCHIVE, UNARCHIVE
+  }
 
   public EditTaskForm() {
     addClassName("edit-task-form");
@@ -67,6 +76,7 @@ public class EditTaskForm extends VerticalLayout {
   public void setTask(Task task) {
     this.task = task;
     binder.readBean(task);
+    updateActions();
   }
 
   private void configureView() {
@@ -83,6 +93,7 @@ public class EditTaskForm extends VerticalLayout {
       .bind("title");
 
     binder.forField(description).bind("description");
+    
     binder.forField(type).bind("type");
     binder.forField(priority).bind("priority");
 
@@ -123,7 +134,7 @@ public class EditTaskForm extends VerticalLayout {
     description.addClassName("task-description");
     description.setWidthFull();
 
-    HorizontalLayout row1 = new HorizontalLayout();
+    HorizontalLayout row2 = new HorizontalLayout();
 
     type = new ComboBox<>("Task Type");
     type.setItems(Task.TaskType.ONE_TIME, Task.TaskType.RECURRING);
@@ -140,10 +151,10 @@ public class EditTaskForm extends VerticalLayout {
       this.getUI().ifPresent(ui -> ui.navigate(route));
     });
 
-    row1.add(type, priority, notesCount, editNotesButton);
-    row1.setDefaultVerticalComponentAlignment(Alignment.END);
+    row2.add(type, priority, notesCount, editNotesButton);
+    row2.setDefaultVerticalComponentAlignment(Alignment.END);
 
-    HorizontalLayout row2 = new HorizontalLayout();
+    HorizontalLayout row3 = new HorizontalLayout();
 
     dateCreated = new TextField("Created");
     dateCreated.setReadOnly(true);
@@ -155,9 +166,9 @@ public class EditTaskForm extends VerticalLayout {
     dateStarted = new DatePicker("Started");
     dateCompleted = new DatePicker("Completed");
 
-    row2.add(dateCreated, dateModified, dateDue, dateStarted, dateCompleted);
+    row3.add(dateCreated, dateModified, dateDue, dateStarted, dateCompleted);
 
-    layout.add(title, description, row1, row2);
+    layout.add(title, description, row2, row3);
     return layout;
   }
 
@@ -175,18 +186,39 @@ public class EditTaskForm extends VerticalLayout {
     deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
     deleteButton.addClickListener(event -> fireEvent(new DeleteEvent(this, task)));
 
-    cancelButton = new Button("Cancel");
-    cancelButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
-    cancelButton.addClickShortcut(Key.ESCAPE);
+    otherActions = new ComboBox<>("Other Actions");
 
-    layout.add(saveButton, deleteButton, cancelButton);
+    closeButton = new Button("Close");
+    closeButton.addClickListener(event -> fireEvent(new CloseEvent(this)));
+    closeButton.addClickShortcut(Key.ESCAPE);
+
+    layout.add(otherActions, saveButton, deleteButton, closeButton);
+    layout.setDefaultVerticalComponentAlignment(Alignment.END);
     return layout;
+  }
+
+  private void updateActions() {
+    if (task != null) {
+      switch (task.getState()) {
+        case CLOSED:
+          otherActions.setItems(TaskAction.REOPEN, TaskAction.ARCHIVE);
+          break;
+        case OPEN:
+          otherActions.setItems(TaskAction.CLOSE);
+          break;
+        case ARCHIVED:
+          otherActions.setItems(TaskAction.UNARCHIVE);
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   private void validateAndSave() {
     try {
       binder.writeBean(task);
-      fireEvent(new SaveEvent(this, task));
+      fireEvent(new SaveEvent(this, task, Optional.ofNullable(otherActions.getValue())));
     } catch (ValidationException e) {
       // TODO - temporary
       logger.error("field validation errors:");
@@ -216,9 +248,18 @@ public class EditTaskForm extends VerticalLayout {
   }
 
   public static class SaveEvent extends EditTaskFormEvent {
-    public SaveEvent(EditTaskForm source, Task task) {
+
+    private Optional<TaskAction> otherAction;
+
+    public SaveEvent(EditTaskForm source, Task task, Optional<TaskAction> otherAction) {
       super(source, task);
+      this.otherAction = otherAction;
     }
+
+    public Optional<TaskAction> getOtherAction() {
+      return otherAction;
+    }
+
   }
 
   public static class DeleteEvent extends EditTaskFormEvent {
@@ -227,8 +268,8 @@ public class EditTaskForm extends VerticalLayout {
     }
   }
 
-  public static class CancelEvent extends EditTaskFormEvent {
-    public CancelEvent(EditTaskForm source) {
+  public static class CloseEvent extends EditTaskFormEvent {
+    public CloseEvent(EditTaskForm source) {
       super(source, null);
     }
   }

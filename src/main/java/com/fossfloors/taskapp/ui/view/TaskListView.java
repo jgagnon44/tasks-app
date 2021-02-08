@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
+import com.fossfloors.taskapp.backend.entity.Task.TaskState;
 import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.ui.form.EditTaskForm;
 import com.fossfloors.taskapp.ui.form.TaskFilterForm;
@@ -51,7 +52,7 @@ public class TaskListView extends VerticalLayout {
 
     editForm.addListener(EditTaskForm.SaveEvent.class, this::saveTask);
     editForm.addListener(EditTaskForm.DeleteEvent.class, this::deleteTask);
-    editForm.addListener(EditTaskForm.CancelEvent.class, event -> closeEditor());
+    editForm.addListener(EditTaskForm.CloseEvent.class, event -> closeEditor());
   }
 
   @Override
@@ -63,18 +64,6 @@ public class TaskListView extends VerticalLayout {
   @PostConstruct
   private void init() {
     grid.setItems(taskService.findAll());
-  }
-
-  private void saveTask(EditTaskForm.SaveEvent event) {
-    taskService.save(event.getTask());
-    taskFilterForm.refresh();
-    closeEditor();
-  }
-
-  private void deleteTask(EditTaskForm.DeleteEvent event) {
-    taskService.delete(event.getTask());
-    taskFilterForm.refresh();
-    closeEditor();
   }
 
   private void configureView() {
@@ -141,6 +130,40 @@ public class TaskListView extends VerticalLayout {
     } else {
       closeEditor();
     }
+  }
+
+  private void saveTask(EditTaskForm.SaveEvent event) {
+    Task task = event.getTask();
+
+    event.getOtherAction().ifPresent(action -> {
+      switch (action) {
+        case ARCHIVE:
+          task.setState(TaskState.ARCHIVED);
+          break;
+        case CLOSE:
+          task.setState(TaskState.CLOSED);
+          break;
+        case REOPEN:
+        case UNARCHIVE:
+          task.setState(TaskState.OPEN);
+          break;
+        default:
+          break;
+      }
+    });
+
+    taskService.save(task);
+    taskFilterForm.refresh();
+    closeEditor();
+  }
+
+  private void deleteTask(EditTaskForm.DeleteEvent event) {
+    // TODO need confirmation
+    Task task = event.getTask();
+    task.setState(TaskState.DELETED);
+    taskService.save(task);
+    taskFilterForm.refresh();
+    closeEditor();
   }
 
   private void closeEditor() {

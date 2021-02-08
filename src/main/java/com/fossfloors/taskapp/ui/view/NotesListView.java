@@ -12,13 +12,11 @@ import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.ui.form.EditNoteForm;
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -35,9 +33,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   private final TaskService   taskService;
 
   private Grid<TaskNote>      grid;
-
   private Button              addButton;
-
   private EditNoteForm        editForm;
 
   private Task                parentTask;
@@ -52,18 +48,15 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
 
     editForm.addListener(EditNoteForm.SaveEvent.class, this::saveNote);
     editForm.addListener(EditNoteForm.DeleteEvent.class, this::deleteNote);
-    editForm.addListener(EditNoteForm.CancelEvent.class, event -> closeEditor());
-
-    updateButtonEnablement();
+    editForm.addListener(EditNoteForm.CloseEvent.class, event -> closeEditor());
   }
 
   @Override
   public void setParameter(BeforeEvent event, Long parameter) {
     Optional<Task> optTask = taskService.findById(parameter);
-    optTask.ifPresent(c -> parentTask = optTask.get());
+    optTask.ifPresent(task -> parentTask = task);
 
     refreshNotes();
-    updateButtonEnablement();
   }
 
   @Override
@@ -88,6 +81,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void deleteNote(EditNoteForm.DeleteEvent event) {
+    // TODO need confirmation
     taskService.deleteNote(parentTask, event.getTaskNote());
     closeEditor();
   }
@@ -98,10 +92,6 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     } else {
       grid.setItems();
     }
-  }
-
-  private void updateButtonEnablement() {
-    addButton.setEnabled(parentTask != null);
   }
 
   private void configureGrid() {
@@ -145,9 +135,6 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   private void add(ClickEvent<?> event) {
     grid.asSingleSelect().clear();
     editNote(new TaskNote());
-
-    // taskService.newNoteFor(parentTask);
-    // refreshNotes();
   }
 
   // private void delete(ClickEvent<?> event) {

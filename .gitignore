@@ -2,6 +2,7 @@
 .settings
 .classpath
 .factorypath
+.metadata
 
 **/data/
 **/target/

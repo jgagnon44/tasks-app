@@ -11,14 +11,6 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-// @NamedEntityGraphs({
-// @NamedEntityGraph(name = "graph.task.notes", attributeNodes = @NamedAttributeNode("notes")),
-// @NamedEntityGraph(name = "graph.task.stateHistory", attributeNodes =
-// @NamedAttributeNode("stateHistory")) })
-
-// @NamedEntityGraph(name = "graph.task", attributeNodes = { @NamedAttributeNode("notes"),
-// @NamedAttributeNode("stateHistory") })
-
 @Entity
 public class Task extends AbstractEntity {
 
@@ -27,7 +19,7 @@ public class Task extends AbstractEntity {
   }
 
   public enum TaskState {
-    ALL, OPEN, CLOSED
+    ALL, OPEN, CLOSED, ARCHIVED, DELETED
   }
 
   public enum TaskPriority {

@@ -11,7 +11,7 @@ import com.vaadin.flow.data.converter.Converter;
 
 public class DateStringToLongConverter implements Converter<String, Long> {
 
-  private static final long      serialVersionUID = -6877574802258829669L;
+  private static final long      serialVersionUID = 1L;
 
   private static final String    DEFAULT_FORMAT   = "MM/dd/yyyy HH:mm:ss";
 

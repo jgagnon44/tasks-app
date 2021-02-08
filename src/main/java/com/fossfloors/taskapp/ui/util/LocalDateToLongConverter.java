@@ -12,7 +12,7 @@ import com.vaadin.flow.data.converter.Converter;
 
 public class LocalDateToLongConverter implements Converter<LocalDate, Long> {
 
-  private static final long serialVersionUID = 7461070875253826208L;
+  private static final long serialVersionUID = -1L;
 
   private ZoneId            zoneId;
 

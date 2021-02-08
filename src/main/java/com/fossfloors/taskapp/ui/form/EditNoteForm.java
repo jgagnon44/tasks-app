@@ -28,7 +28,7 @@ public class EditNoteForm extends VerticalLayout {
 
   private Button              saveButton;
   private Button              deleteButton;
-  private Button              cancelButton;
+  private Button              closeButton;
 
   private Binder<TaskNote>    binder;
 
@@ -75,11 +75,11 @@ public class EditNoteForm extends VerticalLayout {
     deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
     deleteButton.addClickListener(event -> fireEvent(new DeleteEvent(this, taskNote)));
 
-    cancelButton = new Button("Cancel");
-    cancelButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
-    cancelButton.addClickShortcut(Key.ESCAPE);
+    closeButton = new Button("Close");
+    closeButton.addClickListener(event -> fireEvent(new CloseEvent(this)));
+    closeButton.addClickShortcut(Key.ESCAPE);
 
-    layout.add(saveButton, deleteButton, cancelButton);
+    layout.add(saveButton, deleteButton, closeButton);
     return layout;
   }
 
@@ -117,8 +117,8 @@ public class EditNoteForm extends VerticalLayout {
     }
   }
 
-  public static class CancelEvent extends EditNoteFormEvent {
-    public CancelEvent(EditNoteForm source) {
+  public static class CloseEvent extends EditNoteFormEvent {
+    public CloseEvent(EditNoteForm source) {
       super(source, null);
     }
   }
