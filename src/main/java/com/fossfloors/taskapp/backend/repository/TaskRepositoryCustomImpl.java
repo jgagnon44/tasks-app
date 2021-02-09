@@ -25,7 +25,6 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
   private EntityManager       entityManager;
 
   // @formatter:off
-  @Override
   public Optional<Task> findById(long id) {
     Task task = entityManager
         .createQuery("select distinct t from Task t left join fetch t.notes where t.id=:id",
@@ -40,16 +39,10 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
   // @formatter:on
 
   // @formatter:off
-  @Override
   public List<Task> findAll() {
-//    EntityGraph<?> graph = entityManager.getEntityGraph("graph.task");
-
     List<Task> tasks = entityManager
-        .createQuery("select distinct t from Task t " +
-            "left join fetch t.notes", Task.class)
-//        .setHint("javax.persistence.fetchgraph", graph)
+        .createQuery("select distinct t from Task t left join fetch t.notes", Task.class)
         .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
-//        .setHint(GraphSemantic.FETCH.getJpaHintName(), graph)
         .getResultList();
 
     return tasks;
@@ -59,9 +52,7 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
   // @formatter:off
   public List<Task> filter(TaskFilterSpec filter) {
     List<Task> tasks = entityManager
-        .createQuery("select distinct t from Task t " +
-            "left join fetch t.notes n " +
-            "where 1=1" +
+        .createQuery("select distinct t from Task t left join fetch t.notes where 1=1" +
             buildFilterWhereClause(filter), Task.class)
         .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
         .getResultList();
@@ -70,7 +61,6 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
   }
   // @formatter:on
 
-  @SuppressWarnings("incomplete-switch")
   private String buildFilterWhereClause(TaskFilterSpec filter) {
     StringBuilder sb = new StringBuilder();
 
@@ -80,6 +70,11 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
         break;
       case OPEN:
         sb.append(" and t.state = 'OPEN' ");
+        break;
+      case ARCHIVED:
+        sb.append(" and t.state = 'ARCHIVED' ");
+        break;
+      default:
         break;
     }
 
@@ -93,6 +88,8 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
       case MEDIUM:
         sb.append(" and t.priority = 'MEDIUM' ");
         break;
+      default:
+        break;
     }
 
     switch (filter.getTypeFilter()) {
@@ -101,6 +98,8 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
         break;
       case RECURRING:
         sb.append(" and t.type = 'RECURRING' ");
+        break;
+      default:
         break;
     }
 

@@ -9,8 +9,6 @@ import com.fossfloors.taskapp.backend.beans.TaskFilterSpec;
 import com.fossfloors.taskapp.backend.entity.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Long>, TaskRepositoryCustom {
-  // @EntityGraph(value = "graph.task", type = EntityGraphType.LOAD)
-  // @EntityGraph(attributePaths = { "notes", "stateHistory" })
 
   Optional<Task> findById(long id);
 

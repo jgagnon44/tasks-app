@@ -60,11 +60,6 @@ public class TaskService {
     taskRepo.save(task);
   }
 
-  // public void newNoteFor(Task task) {
-  // task.getNotes().add(new TaskNote("new note"));
-  // save(task);
-  // }
-
   public void addNote(Task task, TaskNote note) {
     task.getNotes().add(note);
     save(task);
