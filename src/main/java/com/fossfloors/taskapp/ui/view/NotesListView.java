@@ -4,9 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.backend.service.TaskService;
@@ -25,18 +22,17 @@ import com.vaadin.flow.shared.Registration;
 
 @Route("notes")
 @CssImport("./styles/shared-styles.css")
-@SuppressWarnings("serial")
 public class NotesListView extends VerticalLayout implements HasUrlParameter<Long> {
 
-  private static final Logger logger     = LoggerFactory.getLogger(NotesListView.class);
+  private static final long serialVersionUID = 1L;
 
-  private final TaskService   taskService;
+  private final TaskService taskService;
 
-  private Grid<TaskNote>      grid;
-  private Button              addButton;
-  private EditNoteForm        editForm;
+  private Grid<TaskNote>    grid;
+  private Button            addButton;
+  private EditNoteForm      editForm;
 
-  private Task                parentTask;
+  private Task              parentTask;
 
   public NotesListView(TaskService taskService) {
     this.taskService = taskService;
@@ -69,7 +65,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     configureGrid();
     editForm = new EditNoteForm();
     addButton = new Button("Add", this::add);
-    
+
     add(addButton, grid, editForm);
 
     closeEditor();

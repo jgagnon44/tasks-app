@@ -28,10 +28,12 @@ import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.shared.Registration;
 
 @CssImport("./styles/shared-styles.css")
-@SuppressWarnings("serial")
 public class EditTaskForm extends VerticalLayout {
 
-  private static final Logger         logger = LoggerFactory.getLogger(EditTaskForm.class);
+  private static final long           serialVersionUID = 1L;
+
+  private static final Logger         logger           = LoggerFactory
+      .getLogger(EditTaskForm.class);
 
   private TextField                   title;
   private TextArea                    description;
@@ -235,7 +237,8 @@ public class EditTaskForm extends VerticalLayout {
   }
 
   public static abstract class EditTaskFormEvent extends ComponentEvent<EditTaskForm> {
-    private Task task;
+    private static final long serialVersionUID = 1L;
+    private Task              task;
 
     protected EditTaskFormEvent(EditTaskForm source, Task task) {
       super(source, false);
@@ -248,7 +251,7 @@ public class EditTaskForm extends VerticalLayout {
   }
 
   public static class SaveEvent extends EditTaskFormEvent {
-
+    private static final long    serialVersionUID = 1L;
     private Optional<TaskAction> otherAction;
 
     public SaveEvent(EditTaskForm source, Task task, Optional<TaskAction> otherAction) {
@@ -259,16 +262,19 @@ public class EditTaskForm extends VerticalLayout {
     public Optional<TaskAction> getOtherAction() {
       return otherAction;
     }
-
   }
 
   public static class DeleteEvent extends EditTaskFormEvent {
+    private static final long serialVersionUID = 1L;
+
     public DeleteEvent(EditTaskForm source, Task task) {
       super(source, task);
     }
   }
 
   public static class CloseEvent extends EditTaskFormEvent {
+    private static final long serialVersionUID = 1L;
+
     public CloseEvent(EditTaskForm source) {
       super(source, null);
     }

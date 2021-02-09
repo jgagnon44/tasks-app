@@ -10,6 +10,9 @@ import com.fossfloors.taskapp.backend.entity.Task.TaskType;
 
 public class TaskFilterSpec {
 
+  private String       titleFilter;
+  private String       descriptionFilter;
+
   @NotNull
   @Enumerated(EnumType.STRING)
   private TaskState    stateFilter    = TaskState.ALL;
@@ -21,6 +24,30 @@ public class TaskFilterSpec {
   @NotNull
   @Enumerated(EnumType.STRING)
   private TaskType     typeFilter     = TaskType.ALL;
+
+  public void reset() {
+    titleFilter = null;
+    descriptionFilter = null;
+    stateFilter = TaskState.ALL;
+    priorityFilter = TaskPriority.ALL;
+    typeFilter = TaskType.ALL;
+  }
+
+  public String getTitleFilter() {
+    return titleFilter;
+  }
+
+  public void setTitleFilter(String titleFilter) {
+    this.titleFilter = titleFilter;
+  }
+
+  public String getDescriptionFilter() {
+    return descriptionFilter;
+  }
+
+  public void setDescriptionFilter(String descriptionFilter) {
+    this.descriptionFilter = descriptionFilter;
+  }
 
   public TaskState getStateFilter() {
     return stateFilter;
@@ -44,12 +71,6 @@ public class TaskFilterSpec {
 
   public void setTypeFilter(TaskType typeFilter) {
     this.typeFilter = typeFilter;
-  }
-
-  @Override
-  public String toString() {
-    return "TaskFilterSpec [stateFilter=" + stateFilter + ", priorityFilter=" + priorityFilter
-        + ", typeFilter=" + typeFilter + "]";
   }
 
 }

@@ -19,10 +19,11 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 @CssImport("./styles/shared-styles.css")
-@SuppressWarnings("serial")
 public class EditNoteForm extends VerticalLayout {
 
-  private static final Logger logger = LoggerFactory.getLogger(EditNoteForm.class);
+  private static final long   serialVersionUID = 1L;
+
+  private static final Logger logger           = LoggerFactory.getLogger(EditNoteForm.class);
 
   private TextArea            note;
 
@@ -93,7 +94,8 @@ public class EditNoteForm extends VerticalLayout {
   }
 
   public static abstract class EditNoteFormEvent extends ComponentEvent<EditNoteForm> {
-    private TaskNote taskNote;
+    private static final long serialVersionUID = 1L;
+    private TaskNote          taskNote;
 
     protected EditNoteFormEvent(EditNoteForm source, TaskNote task) {
       super(source, false);
@@ -106,18 +108,24 @@ public class EditNoteForm extends VerticalLayout {
   }
 
   public static class SaveEvent extends EditNoteFormEvent {
+    private static final long serialVersionUID = 1L;
+
     public SaveEvent(EditNoteForm source, TaskNote note) {
       super(source, note);
     }
   }
 
   public static class DeleteEvent extends EditNoteFormEvent {
+    private static final long serialVersionUID = 1L;
+
     public DeleteEvent(EditNoteForm source, TaskNote note) {
       super(source, note);
     }
   }
 
   public static class CloseEvent extends EditNoteFormEvent {
+    private static final long serialVersionUID = 1L;
+
     public CloseEvent(EditNoteForm source) {
       super(source, null);
     }

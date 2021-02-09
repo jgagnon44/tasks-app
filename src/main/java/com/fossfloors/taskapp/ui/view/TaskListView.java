@@ -5,9 +5,6 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.TaskState;
 import com.fossfloors.taskapp.backend.service.TaskService;
@@ -28,19 +25,19 @@ import com.vaadin.flow.shared.Registration;
 
 @Route("main")
 @CssImport("./styles/shared-styles.css")
-@SuppressWarnings("serial")
 public class TaskListView extends VerticalLayout {
 
-  private static final Logger logger = LoggerFactory.getLogger(TaskListView.class);
+  private static final long serialVersionUID = 1L;
 
-  private final TaskService   taskService;
+  private final TaskService taskService;
 
-  private Grid<Task>          grid;
+  private Grid<Task>        grid;
 
-  private Button              addButton;
+  private Button            addButton;
+  private Button            filtersButton;
 
-  private TaskFilterForm      taskFilterForm;
-  private EditTaskForm        editForm;
+  private TaskFilterForm    taskFilterForm;
+  private EditTaskForm      editForm;
 
   public TaskListView(TaskService taskService) {
     this.taskService = taskService;
@@ -53,6 +50,9 @@ public class TaskListView extends VerticalLayout {
     editForm.addListener(EditTaskForm.SaveEvent.class, this::saveTask);
     editForm.addListener(EditTaskForm.DeleteEvent.class, this::deleteTask);
     editForm.addListener(EditTaskForm.CloseEvent.class, event -> closeEditor());
+
+    taskFilterForm.addListener(TaskFilterForm.FilterChangedEvent.class, this::filter);
+    taskFilterForm.addListener(TaskFilterForm.CloseEvent.class, event -> closeFilterPanel());
   }
 
   @Override
@@ -72,21 +72,27 @@ public class TaskListView extends VerticalLayout {
 
     add(configTopPanel(), grid, editForm);
 
+    closeFilterPanel();
     closeEditor();
   }
 
   private Component configTopPanel() {
-    HorizontalLayout layout = new HorizontalLayout();
-    layout.setPadding(false);
+    VerticalLayout layout = new VerticalLayout();
+    HorizontalLayout row1 = new HorizontalLayout();
 
     addButton = new Button("Add", this::add);
     addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-    taskFilterForm = new TaskFilterForm();
-    taskFilterForm.addListener(TaskFilterForm.FilterChangedEvent.class, this::filter);
+    filtersButton = new Button("Filters");
+    filtersButton.addClickListener(event -> {
+      toggleFilterPanel();
+    });
 
-    layout.add(addButton, taskFilterForm);
-    layout.setDefaultVerticalComponentAlignment(Alignment.END);
+    row1.add(addButton, filtersButton);
+
+    taskFilterForm = new TaskFilterForm();
+
+    layout.add(row1, taskFilterForm);
     return layout;
   }
 
@@ -164,6 +170,20 @@ public class TaskListView extends VerticalLayout {
     taskService.save(task);
     taskFilterForm.refresh();
     closeEditor();
+  }
+
+  private void toggleFilterPanel() {
+    if (taskFilterForm.isVisible()) {
+      closeFilterPanel();
+    } else {
+      taskFilterForm.setVisible(true);
+      addClassName("filter-panel");
+    }
+  }
+
+  private void closeFilterPanel() {
+    taskFilterForm.setVisible(false);
+    removeClassName("filter-panel");
   }
 
   private void closeEditor() {
