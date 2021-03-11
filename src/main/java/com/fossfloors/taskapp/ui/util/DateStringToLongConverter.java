@@ -29,7 +29,6 @@ public class DateStringToLongConverter implements Converter<String, Long> {
   public Result<Long> convertToModel(String value, ValueContext context) {
     if (value != null) {
       try {
-        formatter.parse(value);
         return Result.ok(formatter.parse(value).getTime());
       } catch (ParseException e) {
         return Result.error("cannot parse date");
