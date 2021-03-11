@@ -51,7 +51,7 @@ public class TaskListView extends VerticalLayout {
     editForm.addListener(EditTaskForm.DeleteEvent.class, this::deleteTask);
     editForm.addListener(EditTaskForm.CloseEvent.class, event -> closeEditor());
 
-    taskFilterForm.addListener(TaskFilterForm.FilterChangedEvent.class, this::filter);
+    taskFilterForm.addListener(TaskFilterForm.FilterChangedEvent.class, this::applyFilter);
     taskFilterForm.addListener(TaskFilterForm.CloseEvent.class, event -> closeFilterPanel());
   }
 
@@ -119,7 +119,7 @@ public class TaskListView extends VerticalLayout {
     });
   }
 
-  private void filter(TaskFilterForm.FilterChangedEvent event) {
+  private void applyFilter(TaskFilterForm.FilterChangedEvent event) {
     grid.setItems(taskService.filter(event.getFilterSpec()));
   }
 

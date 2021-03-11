@@ -75,9 +75,8 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
 
     buttonLayout.add(addButton, backButton);
 
-    editForm = new EditNoteForm();
-
     configureGrid();
+    editForm = new EditNoteForm();
 
     add(buttonLayout, grid, editForm);
 
