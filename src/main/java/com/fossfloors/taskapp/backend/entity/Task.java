@@ -182,6 +182,16 @@ public class Task extends AbstractEntity {
   public void setDateCompleted(Long dateCompleted) {
     this.dateCompleted = dateCompleted;
   }
+  
+  public void addNote(TaskNote note) {
+    note.setTask(this);
+    notes.add(note);
+  }
+  
+  public void deleteNote(TaskNote note) {
+    note.setTask(null);
+    notes.remove(note);
+  }
 
   @Override
   public String toString() {
