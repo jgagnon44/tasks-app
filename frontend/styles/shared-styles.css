@@ -37,6 +37,10 @@ a[highlight] {
 	flex: 2;
 }
 
+.notes-grid {
+	flex: 2;
+}
+
 .edit-task-form {
 	flex: 2;	
 	padding: var(--lumo-space-m);

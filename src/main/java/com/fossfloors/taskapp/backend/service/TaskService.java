@@ -60,8 +60,11 @@ public class TaskService {
     taskRepo.save(task);
   }
 
-  public void addNote(Task task, TaskNote note) {
-    task.getNotes().add(note);
+  public void saveNote(Task task, TaskNote note) {
+    if (!task.getNotes().contains(note)) {
+      task.getNotes().add(note);
+    }
+
     save(task);
   }
 

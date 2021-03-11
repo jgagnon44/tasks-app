@@ -135,7 +135,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
-    taskService.addNote(parentTask, event.getTaskNote());
+    taskService.saveNote(parentTask, event.getTaskNote());
     closeEditor();
   }
 
