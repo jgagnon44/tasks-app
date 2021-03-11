@@ -14,6 +14,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -29,7 +30,10 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   private final TaskService taskService;
 
   private Grid<TaskNote>    grid;
+
   private Button            addButton;
+  private Button            backButton;
+
   private EditNoteForm      editForm;
 
   private Task              parentTask;
@@ -51,7 +55,6 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   public void setParameter(BeforeEvent event, Long parameter) {
     Optional<Task> optTask = taskService.findById(parameter);
     optTask.ifPresent(task -> parentTask = task);
-
     refreshNotes();
   }
 
@@ -62,23 +65,22 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void configureView() {
-    configureGrid();
-    editForm = new EditNoteForm();
+    HorizontalLayout buttonLayout = new HorizontalLayout();
+
     addButton = new Button("Add", this::add);
+    backButton = new Button("Back");
+    backButton.addClickListener(event -> {
+      this.getUI().ifPresent(ui -> ui.navigate("main"));
+    });
 
-    add(addButton, grid, editForm);
+    buttonLayout.add(addButton, backButton);
 
-    closeEditor();
-  }
+    editForm = new EditNoteForm();
 
-  private void saveNote(EditNoteForm.SaveEvent event) {
-    taskService.addNote(parentTask, event.getTaskNote());
-    closeEditor();
-  }
+    configureGrid();
 
-  private void deleteNote(EditNoteForm.DeleteEvent event) {
-    // TODO need confirmation
-    taskService.deleteNote(parentTask, event.getTaskNote());
+    add(buttonLayout, grid, editForm);
+
     closeEditor();
   }
 
@@ -133,12 +135,15 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     editNote(new TaskNote());
   }
 
-  // private void delete(ClickEvent<?> event) {
-  // if (selected != null) {
-  // // TODO need confirmation/cancel dialog
-  // taskService.deleteNoteFor(parentTask, selected);
-  // refreshNotes();
-  // }
-  // }
+  private void saveNote(EditNoteForm.SaveEvent event) {
+    taskService.addNote(parentTask, event.getTaskNote());
+    closeEditor();
+  }
+
+  private void deleteNote(EditNoteForm.DeleteEvent event) {
+    // TODO need confirmation
+    taskService.deleteNote(parentTask, event.getTaskNote());
+    closeEditor();
+  }
 
 }
