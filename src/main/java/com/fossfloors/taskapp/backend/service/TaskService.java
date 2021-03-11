@@ -62,14 +62,14 @@ public class TaskService {
 
   public void saveNote(Task task, TaskNote note) {
     if (!task.getNotes().contains(note)) {
-      task.getNotes().add(note);
+      task.addNote(note);
     }
 
     save(task);
   }
 
   public void deleteNote(Task task, TaskNote note) {
-    task.getNotes().remove(note);
+    task.deleteNote(note);
     save(task);
   }
 
