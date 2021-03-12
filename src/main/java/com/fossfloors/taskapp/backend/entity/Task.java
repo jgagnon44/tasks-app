@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -44,7 +45,7 @@ public class Task extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private TaskPriority   priority;
 
-  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<TaskNote> notes = new ArrayList<>();
 
   // private Date dateClosed;
