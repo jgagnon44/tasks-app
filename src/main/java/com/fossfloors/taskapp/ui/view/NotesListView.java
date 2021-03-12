@@ -14,6 +14,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -38,6 +39,8 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
 
   private Task              parentTask;
 
+  private Div               title;
+
   public NotesListView(TaskService taskService) {
     this.taskService = taskService;
 
@@ -56,6 +59,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     Optional<Task> optTask = taskService.findById(parameter);
     optTask.ifPresent(task -> parentTask = task);
     refreshNotes();
+    title.setText(parentTask.getTitle() + ": Notes");
   }
 
   @Override
@@ -65,6 +69,8 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void configureView() {
+    title = new Div();
+
     HorizontalLayout buttonLayout = new HorizontalLayout();
 
     addButton = new Button("Add", this::add);
@@ -78,7 +84,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     configureGrid();
     editForm = new EditNoteForm();
 
-    add(buttonLayout, grid, editForm);
+    add(title, buttonLayout, grid, editForm);
 
     closeEditor();
   }
