@@ -18,6 +18,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -30,6 +31,8 @@ public class TaskListView extends VerticalLayout {
   private static final long serialVersionUID = 1L;
 
   private final TaskService taskService;
+
+  private Div               title;
 
   private Grid<Task>        grid;
 
@@ -67,10 +70,14 @@ public class TaskListView extends VerticalLayout {
   }
 
   private void configureView() {
+    title = new Div();
+    title.setText("Tasks List");
+    title.addClassName("page-title");
+
     configureGrid();
     editForm = new EditTaskForm();
 
-    add(configTopPanel(), grid, editForm);
+    add(title, configTopPanel(), grid, editForm);
 
     closeFilterPanel();
     closeEditor();

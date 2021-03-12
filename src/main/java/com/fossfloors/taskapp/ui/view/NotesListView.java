@@ -30,6 +30,8 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
 
   private final TaskService taskService;
 
+  private Div               title;
+
   private Grid<TaskNote>    grid;
 
   private Button            addButton;
@@ -38,8 +40,6 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   private EditNoteForm      editForm;
 
   private Task              parentTask;
-
-  private Div               title;
 
   public NotesListView(TaskService taskService) {
     this.taskService = taskService;
@@ -59,7 +59,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     Optional<Task> optTask = taskService.findById(parameter);
     optTask.ifPresent(task -> parentTask = task);
     refreshNotes();
-    title.setText(parentTask.getTitle() + ": Notes");
+    title.setText("Notes: " + parentTask.getTitle());
   }
 
   @Override
@@ -70,6 +70,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
 
   private void configureView() {
     title = new Div();
+    title.addClassName("page-title");
 
     HorizontalLayout buttonLayout = new HorizontalLayout();
 
