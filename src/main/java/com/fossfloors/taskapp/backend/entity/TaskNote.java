@@ -1,6 +1,7 @@
 package com.fossfloors.taskapp.backend.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -8,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class TaskNote extends AbstractEntity {
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Task   task;
 
   @NotNull
