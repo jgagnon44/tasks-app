@@ -6,8 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
-import com.fossfloors.taskapp.ui.util.DateStringToLongConverter;
-import com.fossfloors.taskapp.ui.util.LocalDateToLongConverter;
+import com.fossfloors.taskapp.ui.util.StringToLocalDateTimeConverter;
 import com.fossfloors.taskapp.ui.view.NotesListView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -104,24 +103,18 @@ public class EditTaskForm extends VerticalLayout {
     }, (task, value) -> {});
 
     binder.forField(dateCreated)
-      .withConverter(new DateStringToLongConverter())
+      .withConverter(new StringToLocalDateTimeConverter())
       .bind("dateCreated");
 
     binder.forField(dateModified)
-      .withConverter(new DateStringToLongConverter())
+      .withConverter(new StringToLocalDateTimeConverter())
       .bind("dateModified");
 
-    binder.forField(dateDue)
-      .withConverter(new LocalDateToLongConverter())
-      .bind("dateDue");
+    binder.forField(dateDue).bind("dateDue");
 
-    binder.forField(dateStarted)
-      .withConverter(new LocalDateToLongConverter())
-      .bind("dateStarted");
+    binder.forField(dateStarted).bind("dateStarted");
 
-    binder.forField(dateCompleted)
-      .withConverter(new LocalDateToLongConverter())
-      .bind("dateCompleted");
+    binder.forField(dateCompleted).bind("dateCompleted");
   }
   // @formatter:on
 
