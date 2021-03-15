@@ -1,7 +1,6 @@
 package com.fossfloors.taskapp.ui.view;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 
 import javax.annotation.PostConstruct;
 
@@ -112,9 +111,9 @@ public class TaskListView extends VerticalLayout {
     grid.addColumn(Task::getPriority).setHeader("Priority").setSortable(true);
     grid.addColumn(Task::getType).setHeader("Type").setSortable(true);
 
-    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    grid.addColumn(bean -> formatter.format(new Date(bean.getDateCreated()))).setHeader("Created")
-        .setSortable(true);
+    grid.addColumn(
+        bean -> bean.getDateCreated().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")))
+        .setHeader("Created").setSortable(true);
 
     grid.getColumns().forEach(col -> {
       col.setAutoWidth(true);

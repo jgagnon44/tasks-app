@@ -1,7 +1,6 @@
 package com.fossfloors.taskapp.ui.view;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import com.fossfloors.taskapp.backend.entity.Task;
@@ -102,9 +101,9 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     grid = new Grid<>();
     grid.addClassName("notes-grid");
 
-    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    grid.addColumn(bean -> formatter.format(new Date(bean.getDateCreated()))).setHeader("Created")
-        .setSortable(true);
+    grid.addColumn(
+        bean -> bean.getDateCreated().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")))
+        .setHeader("Created").setSortable(true);
 
     grid.addColumn(TaskNote::getNote).setHeader("Note").setSortable(true);
 
