@@ -1,11 +1,16 @@
 package com.fossfloors.taskapp.backend.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fossfloors.taskapp.util.DateTimeUtil;
 
@@ -14,48 +19,45 @@ public abstract class AbstractEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private Long   id;
+  private Long          id;
 
-  @NotNull
-  private Long   dateCreated;
+  @CreationTimestamp
+  private LocalDateTime dateCreated;
 
-  @NotNull
-  private Long   dateModified;
-
-  @NotNull
-  @NotEmpty
-  private String createdBy;
+  @UpdateTimestamp
+  private LocalDateTime dateModified;
 
   @NotNull
   @NotEmpty
-  private String modifiedBy;
+  private String        createdBy;
+
+  @NotNull
+  @NotEmpty
+  private String        modifiedBy;
 
   protected AbstractEntity() {
     // TODO find way to get logged in user
     createdBy = "user";
     modifiedBy = "user";
-
-    dateCreated = System.currentTimeMillis();
-    dateModified = dateCreated;
   }
 
   public Long getId() {
     return id;
   }
 
-  public Long getDateCreated() {
+  public LocalDateTime getDateCreated() {
     return dateCreated;
   }
 
-  public void setDateCreated(Long dateCreated) {
+  public void setDateCreated(LocalDateTime dateCreated) {
     this.dateCreated = dateCreated;
   }
 
-  public Long getDateModified() {
+  public LocalDateTime getDateModified() {
     return dateModified;
   }
 
-  public void setDateModified(Long dateModified) {
+  public void setDateModified(LocalDateTime dateModified) {
     this.dateModified = dateModified;
   }
 
@@ -81,9 +83,8 @@ public abstract class AbstractEntity {
 
   @Override
   public String toString() {
-    return "AbstractEntity [id=" + id + ", dateCreated=" + DateTimeUtil.format(dateCreated)
-        + ", dateModified=" + DateTimeUtil.format(dateModified) + ", createdBy=" + createdBy
-        + ", modifiedBy=" + modifiedBy + "]";
+    return "AbstractEntity [id=" + id + ", dateCreated=" + dateCreated + ", dateModified="
+        + dateModified + ", createdBy=" + createdBy + ", modifiedBy=" + modifiedBy + "]";
   }
 
   @Override
@@ -91,8 +92,8 @@ public abstract class AbstractEntity {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-    result = prime * result + (int) (dateCreated ^ (dateCreated >>> 32));
-    result = prime * result + (int) (dateModified ^ (dateModified >>> 32));
+    result = prime * result + ((dateCreated == null) ? 0 : dateCreated.hashCode());
+    result = prime * result + ((dateModified == null) ? 0 : dateModified.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((modifiedBy == null) ? 0 : modifiedBy.hashCode());
     return result;
@@ -112,9 +113,15 @@ public abstract class AbstractEntity {
         return false;
     } else if (!createdBy.equals(other.createdBy))
       return false;
-    if (dateCreated != other.dateCreated)
+    if (dateCreated == null) {
+      if (other.dateCreated != null)
+        return false;
+    } else if (!dateCreated.equals(other.dateCreated))
       return false;
-    if (dateModified != other.dateModified)
+    if (dateModified == null) {
+      if (other.dateModified != null)
+        return false;
+    } else if (!dateModified.equals(other.dateModified))
       return false;
     if (id == null) {
       if (other.id != null)
