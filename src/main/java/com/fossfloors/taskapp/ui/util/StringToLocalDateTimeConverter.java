@@ -25,7 +25,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
   @Override
   public Result<LocalDateTime> convertToModel(String value, ValueContext context) {
-    if (value != null) {
+    if (value != null && !value.isEmpty()) {
       return Result.ok(LocalDateTime.parse(value, formatter));
     } else {
       return Result.ok(null);
