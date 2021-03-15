@@ -1,5 +1,6 @@
 package com.fossfloors.taskapp.backend.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,15 +49,10 @@ public class Task extends AbstractEntity {
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<TaskNote> notes = new ArrayList<>();
 
-  // private Date dateClosed;
-  // private Date dateDue;
-  // private Date dateStarted;
-  // private Date dateCompleted;
-
-  private Long           dateClosed;
-  private Long           dateDue;
-  private Long           dateStarted;
-  private Long           dateCompleted;
+  private LocalDate      dateClosed;
+  private LocalDate      dateDue;
+  private LocalDate      dateStarted;
+  private LocalDate      dateCompleted;
 
   public Task() {
     super();
@@ -120,67 +116,35 @@ public class Task extends AbstractEntity {
     this.notes = notes;
   }
 
-  // public Date getDateClosed() {
-  // return dateClosed;
-  // }
-  //
-  // public void setDateClosed(Date dateClosed) {
-  // this.dateClosed = dateClosed;
-  // }
-  //
-  // public Date getDateDue() {
-  // return dateDue;
-  // }
-  //
-  // public void setDateDue(Date dateDue) {
-  // this.dateDue = dateDue;
-  // }
-  //
-  // public Date getDateStarted() {
-  // return dateStarted;
-  // }
-  //
-  // public void setDateStarted(Date dateStarted) {
-  // this.dateStarted = dateStarted;
-  // }
-  //
-  // public Date getDateCompleted() {
-  // return dateCompleted;
-  // }
-  //
-  // public void setDateCompleted(Date dateCompleted) {
-  // this.dateCompleted = dateCompleted;
-  // }
-
-  public Long getDateClosed() {
+  public LocalDate getDateClosed() {
     return dateClosed;
   }
 
-  public void setDateClosed(Long dateClosed) {
+  public void setDateClosed(LocalDate dateClosed) {
     this.dateClosed = dateClosed;
   }
 
-  public Long getDateDue() {
+  public LocalDate getDateDue() {
     return dateDue;
   }
 
-  public void setDateDue(Long dateDue) {
+  public void setDateDue(LocalDate dateDue) {
     this.dateDue = dateDue;
   }
 
-  public Long getDateStarted() {
+  public LocalDate getDateStarted() {
     return dateStarted;
   }
 
-  public void setDateStarted(Long dateStarted) {
+  public void setDateStarted(LocalDate dateStarted) {
     this.dateStarted = dateStarted;
   }
 
-  public Long getDateCompleted() {
+  public LocalDate getDateCompleted() {
     return dateCompleted;
   }
 
-  public void setDateCompleted(Long dateCompleted) {
+  public void setDateCompleted(LocalDate dateCompleted) {
     this.dateCompleted = dateCompleted;
   }
 
