@@ -12,33 +12,33 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fossfloors.taskapp.util.DateTimeUtil;
-
 @MappedSuperclass
 public abstract class AbstractEntity {
 
+  private static final String user = System.getProperty("user.name");
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private Long          id;
+  private Long                id;
 
   @CreationTimestamp
-  private LocalDateTime dateCreated;
+  private LocalDateTime       dateCreated;
 
   @UpdateTimestamp
-  private LocalDateTime dateModified;
+  private LocalDateTime       dateModified;
 
   @NotNull
   @NotEmpty
-  private String        createdBy;
+  private String              createdBy;
 
   @NotNull
   @NotEmpty
-  private String        modifiedBy;
+  private String              modifiedBy;
 
   protected AbstractEntity() {
     // TODO find way to get logged in user
-    createdBy = "user";
-    modifiedBy = "user";
+    createdBy = user;
+    modifiedBy = user;
   }
 
   public Long getId() {
