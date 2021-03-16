@@ -1,6 +1,5 @@
 package com.fossfloors.taskapp.ui.view;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import com.fossfloors.taskapp.backend.entity.Task;
@@ -16,6 +15,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
@@ -101,8 +101,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     grid = new Grid<>();
     grid.addClassName("notes-grid");
 
-    grid.addColumn(
-        bean -> bean.getDateCreated().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")))
+    grid.addColumn(new LocalDateTimeRenderer<>(TaskNote::getDateCreated, "MM/dd/yyyy HH:mm:ss"))
         .setHeader("Created").setSortable(true);
 
     grid.addColumn(TaskNote::getNote).setHeader("Note").setSortable(true);
