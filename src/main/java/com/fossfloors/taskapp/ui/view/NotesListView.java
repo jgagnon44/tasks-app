@@ -97,24 +97,27 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     }
   }
 
+  // @formatter:off
   private void configureGrid() {
     grid = new Grid<>();
     grid.addClassName("notes-grid");
 
     grid.addColumn(new LocalDateTimeRenderer<>(TaskNote::getDateCreated, "MM/dd/yyyy HH:mm:ss"))
-        .setHeader("Created").setSortable(true);
+        .setHeader("Created")
+        .setResizable(true)
+        .setSortable(true);
 
-    grid.addColumn(TaskNote::getNote).setHeader("Note").setSortable(true);
-
-    grid.getColumns().forEach(col -> {
-      col.setAutoWidth(true);
-      col.setResizable(true);
-    });
+    grid.addColumn(TaskNote::getNote)
+        .setHeader("Note")
+        .setWidth("80%")
+        .setResizable(true)
+        .setSortable(true);
 
     grid.asSingleSelect().addValueChangeListener(event -> {
       editNote(event.getValue());
     });
   }
+  // @formatter:on
 
   private void editNote(TaskNote note) {
     if (note != null) {
