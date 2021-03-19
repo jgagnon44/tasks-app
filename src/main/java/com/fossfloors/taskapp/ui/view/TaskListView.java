@@ -1,7 +1,5 @@
 package com.fossfloors.taskapp.ui.view;
 
-import java.time.format.DateTimeFormatter;
-
 import javax.annotation.PostConstruct;
 
 import com.fossfloors.taskapp.backend.entity.Task;
@@ -20,6 +18,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 
@@ -112,9 +111,8 @@ public class TaskListView extends VerticalLayout {
     grid.addColumn(Task::getPriority).setHeader("Priority");
     grid.addColumn(Task::getType).setHeader("Type");
 
-    grid.addColumn(
-        bean -> bean.getDateCreated().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")))
-        .setHeader("Created");
+    grid.addColumn(new LocalDateTimeRenderer<>(Task::getDateCreated, "MM/dd/yyyy HH:mm:ss"))
+      .setHeader("Created");
 
     grid.getColumns().forEach(col -> {
       col.setAutoWidth(true);
