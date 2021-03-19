@@ -102,28 +102,31 @@ public class TaskListView extends VerticalLayout {
     return layout;
   }
 
+  // @formatter:off
   private void configureGrid() {
     grid = new Grid<>();
     grid.addClassName("tasks-grid");
 
-    grid.addColumn(Task::getTitle).setHeader("Title").setSortable(true);
-    grid.addColumn(Task::getState).setHeader("State").setSortable(true);
-    grid.addColumn(Task::getPriority).setHeader("Priority").setSortable(true);
-    grid.addColumn(Task::getType).setHeader("Type").setSortable(true);
+    grid.addColumn(Task::getTitle).setHeader("Title");
+    grid.addColumn(Task::getState).setHeader("State");
+    grid.addColumn(Task::getPriority).setHeader("Priority");
+    grid.addColumn(Task::getType).setHeader("Type");
 
     grid.addColumn(
         bean -> bean.getDateCreated().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")))
-        .setHeader("Created").setSortable(true);
+        .setHeader("Created");
 
     grid.getColumns().forEach(col -> {
       col.setAutoWidth(true);
       col.setResizable(true);
+      col.setSortable(true);
     });
 
     grid.asSingleSelect().addValueChangeListener(event -> {
       editTask(event.getValue());
     });
   }
+  // @formatter:on
 
   private void applyFilter(TaskFilterForm.FilterChangedEvent event) {
     grid.setItems(taskService.filter(event.getFilterSpec()));
