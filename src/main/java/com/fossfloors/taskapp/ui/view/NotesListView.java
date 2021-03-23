@@ -140,11 +140,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
 
   private void add(ClickEvent<?> event) {
     grid.asSingleSelect().clear();
-    // Create new task note and add to parent task.
-    TaskNote note = new TaskNote();
-    parentTask.addNote(note);
-    // Edit note.
-    editNote(note);
+    editNote(new TaskNote());
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
