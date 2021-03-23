@@ -94,7 +94,6 @@ public class EditTaskForm extends VerticalLayout {
       .bind("title");
 
     binder.forField(description).bind("description");
-    
     binder.forField(type).bind("type");
     binder.forField(priority).bind("priority");
 
@@ -111,9 +110,7 @@ public class EditTaskForm extends VerticalLayout {
       .bind("dateModified");
 
     binder.forField(dateDue).bind("dateDue");
-
     binder.forField(dateStarted).bind("dateStarted");
-
     binder.forField(dateCompleted).bind("dateCompleted");
   }
   // @formatter:on
