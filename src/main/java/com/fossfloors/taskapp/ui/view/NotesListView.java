@@ -2,6 +2,9 @@ package com.fossfloors.taskapp.ui.view;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.backend.service.TaskService;
@@ -25,20 +28,22 @@ import com.vaadin.flow.shared.Registration;
 @CssImport("./styles/shared-styles.css")
 public class NotesListView extends VerticalLayout implements HasUrlParameter<Long> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long   serialVersionUID = 1L;
 
-  private final TaskService taskService;
+  private static final Logger logger           = LoggerFactory.getLogger(NotesListView.class);
 
-  private Div               title;
+  private final TaskService   taskService;
 
-  private Grid<TaskNote>    grid;
+  private Div                 title;
 
-  private Button            addButton;
-  private Button            backButton;
+  private Grid<TaskNote>      grid;
 
-  private EditNoteForm      editForm;
+  private Button              addButton;
+  private Button              backButton;
 
-  private Task              parentTask;
+  private EditNoteForm        editForm;
+
+  private Task                parentTask;
 
   public NotesListView(TaskService taskService) {
     this.taskService = taskService;
@@ -92,9 +97,11 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void refresh() {
+    logger.info("refresh: PARENT: {}", parentTask);
     if (parentTask != null) {
       Optional<Task> optTask = taskService.findById(parentTask.getId());
       optTask.ifPresent(task -> {
+        logger.info("refresh: NOTES: {}", task.getNotes());
         grid.setItems(task.getNotes());
       });
     } else {
@@ -149,6 +156,8 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
+    logger.info("saveNote: PARENT: {}", parentTask);
+    logger.info("saveNote: NOTE: {}", event.getTaskNote());
     taskService.saveNote(parentTask, event.getTaskNote());
     closeEditor();
   }
