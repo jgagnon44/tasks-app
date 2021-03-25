@@ -56,8 +56,10 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   @Override
   public void setParameter(BeforeEvent event, Long parameter) {
     Optional<Task> optTask = taskService.findById(parameter);
-    optTask.ifPresent(task -> parentTask = task);
-    refreshNotes();
+    optTask.ifPresent(task -> {
+      parentTask = task;
+      refresh();
+    });
     title.setText("Notes: " + parentTask.getTitle());
   }
 
@@ -89,9 +91,12 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     closeEditor();
   }
 
-  private void refreshNotes() {
+  private void refresh() {
     if (parentTask != null) {
-      grid.setItems(parentTask.getNotes());
+      Optional<Task> optTask = taskService.findById(parentTask.getId());
+      optTask.ifPresent(task -> {
+        grid.setItems(task.getNotes());
+      });
     } else {
       grid.setItems();
     }
@@ -135,7 +140,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     editForm.setTaskNote(null);
     editForm.setVisible(false);
     removeClassName("editing-note");
-    refreshNotes();
+    refresh();
   }
 
   private void add(ClickEvent<?> event) {
