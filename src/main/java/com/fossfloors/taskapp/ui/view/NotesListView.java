@@ -97,11 +97,11 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void refresh() {
-    logger.info("refresh: PARENT: {}", parentTask);
+    logger.info("PARENT: {}", parentTask);
     if (parentTask != null) {
       Optional<Task> optTask = taskService.findById(parentTask.getId());
       optTask.ifPresent(task -> {
-        logger.info("refresh: NOTES: {}", task.getNotes());
+        logger.info("NOTES: {}", task.getNotes());
         grid.setItems(task.getNotes());
       });
     } else {
@@ -156,8 +156,8 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
-    logger.info("saveNote: PARENT: {}", parentTask);
-    logger.info("saveNote: NOTE: {}", event.getTaskNote());
+    logger.info("PARENT: {}", parentTask);
+    logger.info("NOTE: {}", event.getTaskNote());
     taskService.saveNote(parentTask, event.getTaskNote());
     closeEditor();
   }
