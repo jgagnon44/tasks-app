@@ -43,7 +43,7 @@ public class TaskNote extends AbstractEntity {
 
   @Override
   public String toString() {
-    return "TaskNote [task=" + task.hashCode() + ", note=" + note + "]";
+    return "TaskNote [hashCode=" + hashCode() + ", note=" + note + "]";
   }
 
   @Override
@@ -51,7 +51,7 @@ public class TaskNote extends AbstractEntity {
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + ((note == null) ? 0 : note.hashCode());
-    result = prime * result + ((task == null) ? 0 : task.hashCode());
+    // result = prime * result + ((task == null) ? 0 : task.hashCode());
     return result;
   }
 
