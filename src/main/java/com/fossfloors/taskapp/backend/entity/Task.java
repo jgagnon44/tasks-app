@@ -160,10 +160,10 @@ public class Task extends AbstractEntity {
 
   @Override
   public String toString() {
-    return "Task [title=" + title + ", description=" + description + ", type=" + type + ", state="
-        + state + ", priority=" + priority + ", notes=" + notes + ", dateClosed=" + dateClosed
-        + ", dateDue=" + dateDue + ", dateStarted=" + dateStarted + ", dateCompleted="
-        + dateCompleted + "]";
+    return "Task [hashcode=" + hashCode() + ", title=" + title + ", description=" + description
+        + ", type=" + type + ", state=" + state + ", priority=" + priority + ", notes=" + notes
+        + ", dateClosed=" + dateClosed + ", dateDue=" + dateDue + ", dateStarted=" + dateStarted
+        + ", dateCompleted=" + dateCompleted + "]";
   }
 
   @Override
@@ -175,7 +175,7 @@ public class Task extends AbstractEntity {
     result = prime * result + ((dateDue == null) ? 0 : dateDue.hashCode());
     result = prime * result + ((dateStarted == null) ? 0 : dateStarted.hashCode());
     result = prime * result + ((description == null) ? 0 : description.hashCode());
-    result = prime * result + ((notes == null) ? 0 : notes.hashCode());
+    // result = prime * result + ((notes == null) ? 0 : notes.hashCode());
     result = prime * result + ((priority == null) ? 0 : priority.hashCode());
     result = prime * result + ((state == null) ? 0 : state.hashCode());
     result = prime * result + ((title == null) ? 0 : title.hashCode());
