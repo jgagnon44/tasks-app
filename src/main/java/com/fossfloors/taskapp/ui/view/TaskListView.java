@@ -3,7 +3,6 @@ package com.fossfloors.taskapp.ui.view;
 import javax.annotation.PostConstruct;
 
 import com.fossfloors.taskapp.backend.entity.Task;
-import com.fossfloors.taskapp.backend.entity.Task.TaskState;
 import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.ui.form.EditTaskForm;
 import com.fossfloors.taskapp.ui.form.TaskFilterForm;
@@ -43,7 +42,7 @@ public class TaskListView extends VerticalLayout {
   public TaskListView(TaskService taskService) {
     this.taskService = taskService;
 
-    addClassName("task-list-view");
+    this.addClassName("task-list-view");
     setSizeFull();
 
     configureView();
@@ -139,7 +138,7 @@ public class TaskListView extends VerticalLayout {
     if (task != null) {
       editForm.setTask(task);
       editForm.setVisible(true);
-      addClassName("editing-task");
+      this.addClassName("editing-task");
     } else {
       closeEditor();
     }
@@ -151,14 +150,14 @@ public class TaskListView extends VerticalLayout {
     event.getOtherAction().ifPresent(action -> {
       switch (action) {
         case ARCHIVE:
-          task.setState(TaskState.ARCHIVED);
+          task.setState(Task.State.ARCHIVED);
           break;
         case CLOSE:
-          task.setState(TaskState.CLOSED);
+          task.setState(Task.State.CLOSED);
           break;
         case REOPEN:
         case UNARCHIVE:
-          task.setState(TaskState.OPEN);
+          task.setState(Task.State.OPEN);
           break;
         default:
           break;
@@ -173,7 +172,7 @@ public class TaskListView extends VerticalLayout {
   private void deleteTask(EditTaskForm.DeleteEvent event) {
     // TODO need confirmation
     Task task = event.getTask();
-    task.setState(TaskState.DELETED);
+    task.setState(Task.State.DELETED);
     taskService.save(task);
     taskFilterForm.refresh();
     closeEditor();
@@ -184,20 +183,20 @@ public class TaskListView extends VerticalLayout {
       closeFilterPanel();
     } else {
       taskFilterForm.setVisible(true);
-      addClassName("filter-panel");
+      this.addClassName("filter-panel");
     }
   }
 
   private void closeFilterPanel() {
     taskFilterForm.setVisible(false);
-    removeClassName("filter-panel");
+    this.removeClassName("filter-panel");
   }
 
   private void closeEditor() {
     grid.asSingleSelect().clear();
     editForm.setTask(null);
     editForm.setVisible(false);
-    removeClassName("editing-task");
+    this.removeClassName("editing-task");
   }
 
 }

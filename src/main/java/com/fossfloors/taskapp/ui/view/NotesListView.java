@@ -48,7 +48,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
   public NotesListView(TaskService taskService) {
     this.taskService = taskService;
 
-    addClassName("notes-list-view");
+    this.addClassName("notes-list-view");
     setSizeFull();
 
     configureView();
@@ -146,7 +146,7 @@ public class NotesListView extends VerticalLayout implements HasUrlParameter<Lon
     grid.asSingleSelect().clear();
     editForm.setTaskNote(null);
     editForm.setVisible(false);
-    removeClassName("editing-note");
+    this.removeClassName("editing-note");
     refresh();
   }
 
