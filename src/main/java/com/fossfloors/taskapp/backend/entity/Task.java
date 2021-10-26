@@ -16,15 +16,15 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Task extends AbstractEntity {
 
-  public enum TaskType {
+  public enum Type {
     ALL, ONE_TIME, RECURRING
   }
 
-  public enum TaskState {
+  public enum State {
     ALL, OPEN, CLOSED, ARCHIVED, DELETED
   }
 
-  public enum TaskPriority {
+  public enum Priority {
     ALL, LOW, MEDIUM, HIGH
   }
 
@@ -36,15 +36,15 @@ public class Task extends AbstractEntity {
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskType       type;
+  private Type           type;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskState      state;
+  private State          state;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskPriority   priority;
+  private Priority       priority;
 
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<TaskNote> notes = new ArrayList<>();
@@ -58,9 +58,9 @@ public class Task extends AbstractEntity {
     super();
 
     // Set defaults.
-    type = TaskType.ONE_TIME;
-    state = TaskState.OPEN;
-    priority = TaskPriority.MEDIUM;
+    type = Type.ONE_TIME;
+    state = State.OPEN;
+    priority = Priority.MEDIUM;
   }
 
   public Task(String title) {
@@ -84,27 +84,27 @@ public class Task extends AbstractEntity {
     this.description = description;
   }
 
-  public TaskType getType() {
+  public Type getType() {
     return type;
   }
 
-  public void setType(TaskType type) {
+  public void setType(Type type) {
     this.type = type;
   }
 
-  public TaskState getState() {
+  public State getState() {
     return state;
   }
 
-  public void setState(TaskState state) {
+  public void setState(State state) {
     this.state = state;
   }
 
-  public TaskPriority getPriority() {
+  public Priority getPriority() {
     return priority;
   }
 
-  public void setPriority(TaskPriority priority) {
+  public void setPriority(Priority priority) {
     this.priority = priority;
   }
 

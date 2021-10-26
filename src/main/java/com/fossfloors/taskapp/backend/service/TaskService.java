@@ -13,9 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fossfloors.taskapp.backend.beans.TaskFilterSpec;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
-import com.fossfloors.taskapp.backend.entity.Task.TaskPriority;
-import com.fossfloors.taskapp.backend.entity.Task.TaskState;
-import com.fossfloors.taskapp.backend.entity.Task.TaskType;
 import com.fossfloors.taskapp.backend.repository.TaskRepository;
 
 @Service
@@ -81,8 +78,8 @@ public class TaskService {
 
       // Task 1
       task = new Task("Task-1");
-      task.setPriority(TaskPriority.HIGH);
-      task.setType(TaskType.RECURRING);
+      task.setPriority(Task.Priority.HIGH);
+      task.setType(Task.Type.RECURRING);
 
       // Note 1
       note = new TaskNote();
@@ -100,9 +97,9 @@ public class TaskService {
 
       // Task 2
       task = new Task("Task-2");
-      task.setPriority(TaskPriority.LOW);
-      task.setType(TaskType.ONE_TIME);
-      task.setState(TaskState.CLOSED);
+      task.setPriority(Task.Priority.LOW);
+      task.setType(Task.Type.ONE_TIME);
+      task.setState(Task.State.CLOSED);
 
       taskRepo.save(task);
     }

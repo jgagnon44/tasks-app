@@ -29,33 +29,32 @@ import com.vaadin.flow.shared.Registration;
 @CssImport("./styles/shared-styles.css")
 public class EditTaskForm extends VerticalLayout {
 
-  private static final long           serialVersionUID = 1L;
+  private static final long       serialVersionUID = 1L;
 
-  private static final Logger         logger           = LoggerFactory
-      .getLogger(EditTaskForm.class);
+  private static final Logger     logger           = LoggerFactory.getLogger(EditTaskForm.class);
 
-  private TextField                   title;
-  private TextArea                    description;
+  private TextField               title;
+  private TextArea                description;
 
-  private ComboBox<Task.TaskType>     type;
-  private ComboBox<Task.TaskPriority> priority;
-  private TextField                   notesCount;
-  private Button                      editNotesButton;
+  private ComboBox<Task.Type>     type;
+  private ComboBox<Task.Priority> priority;
+  private TextField               notesCount;
+  private Button                  editNotesButton;
 
-  private TextField                   dateCreated;
-  private TextField                   dateModified;
-  private DatePicker                  dateDue;
-  private DatePicker                  dateStarted;
-  private DatePicker                  dateCompleted;
+  private TextField               dateCreated;
+  private TextField               dateModified;
+  private DatePicker              dateDue;
+  private DatePicker              dateStarted;
+  private DatePicker              dateCompleted;
 
-  private Button                      saveButton;
-  private Button                      deleteButton;
-  private Button                      closeButton;
-  private ComboBox<TaskAction>        otherActions;
+  private Button                  saveButton;
+  private Button                  deleteButton;
+  private Button                  closeButton;
+  private ComboBox<TaskAction>    otherActions;
 
-  private Binder<Task>                binder;
+  private Binder<Task>            binder;
 
-  private Task                        task;
+  private Task                    task;
 
   public enum TaskAction {
     CLOSE, REOPEN, ARCHIVE, UNARCHIVE
@@ -129,10 +128,10 @@ public class EditTaskForm extends VerticalLayout {
     HorizontalLayout row2 = new HorizontalLayout();
 
     type = new ComboBox<>("Task Type");
-    type.setItems(Task.TaskType.ONE_TIME, Task.TaskType.RECURRING);
+    type.setItems(Task.Type.ONE_TIME, Task.Type.RECURRING);
 
     priority = new ComboBox<>("Priority");
-    priority.setItems(Task.TaskPriority.LOW, Task.TaskPriority.MEDIUM, Task.TaskPriority.HIGH);
+    priority.setItems(Task.Priority.LOW, Task.Priority.MEDIUM, Task.Priority.HIGH);
 
     notesCount = new TextField("Notes Count");
     notesCount.setReadOnly(true);

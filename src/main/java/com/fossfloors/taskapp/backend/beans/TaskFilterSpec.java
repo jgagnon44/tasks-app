@@ -4,33 +4,31 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
-import com.fossfloors.taskapp.backend.entity.Task.TaskPriority;
-import com.fossfloors.taskapp.backend.entity.Task.TaskState;
-import com.fossfloors.taskapp.backend.entity.Task.TaskType;
+import com.fossfloors.taskapp.backend.entity.Task;
 
 public class TaskFilterSpec {
 
-  private String       titleFilter;
-  private String       descriptionFilter;
+  private String        titleFilter;
+  private String        descriptionFilter;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskState    stateFilter    = TaskState.ALL;
+  private Task.State    stateFilter    = Task.State.ALL;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskPriority priorityFilter = TaskPriority.ALL;
+  private Task.Priority priorityFilter = Task.Priority.ALL;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TaskType     typeFilter     = TaskType.ALL;
+  private Task.Type     typeFilter     = Task.Type.ALL;
 
   public void reset() {
     titleFilter = null;
     descriptionFilter = null;
-    stateFilter = TaskState.ALL;
-    priorityFilter = TaskPriority.ALL;
-    typeFilter = TaskType.ALL;
+    stateFilter = Task.State.ALL;
+    priorityFilter = Task.Priority.ALL;
+    typeFilter = Task.Type.ALL;
   }
 
   public String getTitleFilter() {
@@ -49,27 +47,27 @@ public class TaskFilterSpec {
     this.descriptionFilter = descriptionFilter;
   }
 
-  public TaskState getStateFilter() {
+  public Task.State getStateFilter() {
     return stateFilter;
   }
 
-  public void setStateFilter(TaskState stateFilter) {
+  public void setStateFilter(Task.State stateFilter) {
     this.stateFilter = stateFilter;
   }
 
-  public TaskPriority getPriorityFilter() {
+  public Task.Priority getPriorityFilter() {
     return priorityFilter;
   }
 
-  public void setPriorityFilter(TaskPriority priorityFilter) {
+  public void setPriorityFilter(Task.Priority priorityFilter) {
     this.priorityFilter = priorityFilter;
   }
 
-  public TaskType getTypeFilter() {
+  public Task.Type getTypeFilter() {
     return typeFilter;
   }
 
-  public void setTypeFilter(TaskType typeFilter) {
+  public void setTypeFilter(Task.Type typeFilter) {
     this.typeFilter = typeFilter;
   }
 

@@ -2,7 +2,6 @@ package com.fossfloors.taskapp.ui.form;
 
 import com.fossfloors.taskapp.backend.beans.TaskFilterSpec;
 import com.fossfloors.taskapp.backend.entity.Task;
-import com.fossfloors.taskapp.backend.entity.Task.TaskState;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -17,21 +16,21 @@ import com.vaadin.flow.shared.Registration;
 @CssImport("./styles/shared-styles.css")
 public class TaskFilterForm extends VerticalLayout {
 
-  private static final long           serialVersionUID = 1L;
+  private static final long       serialVersionUID = 1L;
 
-  private TextField                   titleFilter;
-  private TextField                   descriptionFilter;
+  private TextField               titleFilter;
+  private TextField               descriptionFilter;
 
-  private ComboBox<Task.TaskState>    stateFilter;
-  private ComboBox<Task.TaskPriority> priorityFilter;
-  private ComboBox<Task.TaskType>     typeFilter;
+  private ComboBox<Task.State>    stateFilter;
+  private ComboBox<Task.Priority> priorityFilter;
+  private ComboBox<Task.Type>     typeFilter;
 
-  private Button                      applyButton;
-  private Button                      resetButton;
-  private Button                      closeButton;
+  private Button                  applyButton;
+  private Button                  resetButton;
+  private Button                  closeButton;
 
-  private Binder<TaskFilterSpec>      binder;
-  private TaskFilterSpec              filterBean       = new TaskFilterSpec();
+  private Binder<TaskFilterSpec>  binder;
+  private TaskFilterSpec          filterBean       = new TaskFilterSpec();
 
   public TaskFilterForm() {
     addClassName("task-filter-view");
@@ -59,13 +58,13 @@ public class TaskFilterForm extends VerticalLayout {
     HorizontalLayout row2 = new HorizontalLayout();
 
     stateFilter = new ComboBox<>("Task State");
-    stateFilter.setItems(TaskState.ALL, TaskState.OPEN, TaskState.CLOSED, TaskState.ARCHIVED);
+    stateFilter.setItems(Task.State.ALL, Task.State.OPEN, Task.State.CLOSED, Task.State.ARCHIVED);
 
     priorityFilter = new ComboBox<>("Priority");
-    priorityFilter.setItems(Task.TaskPriority.values());
+    priorityFilter.setItems(Task.Priority.values());
 
     typeFilter = new ComboBox<>("Type");
-    typeFilter.setItems(Task.TaskType.values());
+    typeFilter.setItems(Task.Type.values());
 
     row2.add(stateFilter, priorityFilter, typeFilter);
 
@@ -73,7 +72,9 @@ public class TaskFilterForm extends VerticalLayout {
     row3.setAlignItems(Alignment.CENTER);
 
     applyButton = new Button("Apply");
-    applyButton.addClickListener(event -> refresh());
+    applyButton.addClickListener(event -> {
+      refresh();
+    });
 
     resetButton = new Button("Reset");
     resetButton.addClickListener(event -> {
