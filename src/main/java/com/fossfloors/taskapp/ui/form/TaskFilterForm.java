@@ -7,6 +7,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -49,6 +50,10 @@ public class TaskFilterForm extends VerticalLayout {
   }
 
   private void configureView() {
+    Div title = new Div();
+    title.setText("Filters");
+    title.addClassName("page-title");
+
     HorizontalLayout row1 = new HorizontalLayout();
 
     titleFilter = new TextField("Title");
@@ -85,7 +90,7 @@ public class TaskFilterForm extends VerticalLayout {
 
     row3.add(applyButton, resetButton);
 
-    add(row1, row2, row3);
+    add(title, row1, row2, row3);
 
     binder = new Binder<>(TaskFilterSpec.class);
     binder.setBean(filterBean);
