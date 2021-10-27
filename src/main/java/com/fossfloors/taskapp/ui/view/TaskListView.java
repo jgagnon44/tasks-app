@@ -31,8 +31,6 @@ public class TaskListView extends VerticalLayout {
 
   private final TaskService taskService;
 
-  private Div               title;
-
   private Grid<Task>        grid;
 
   private Button            addButton;
@@ -67,7 +65,7 @@ public class TaskListView extends VerticalLayout {
   }
 
   private void configureView() {
-    title = new Div();
+    Div title = new Div();
     title.setText("Tasks List");
     title.addClassName("page-title");
 
