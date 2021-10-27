@@ -27,12 +27,13 @@ public class TaskFilterForm extends VerticalLayout {
 
   private Button                  applyButton;
   private Button                  resetButton;
-  private Button                  closeButton;
 
   private Binder<TaskFilterSpec>  binder;
-  private TaskFilterSpec          filterBean       = new TaskFilterSpec();
+  private TaskFilterSpec          filterBean;
 
-  public TaskFilterForm() {
+  public TaskFilterForm(TaskFilterSpec filterBean) {
+    this.filterBean = filterBean;
+
     addClassName("task-filter-view");
     configureView();
   }
@@ -82,13 +83,7 @@ public class TaskFilterForm extends VerticalLayout {
       binder.readBean(filterBean);
     });
 
-    closeButton = new Button("Close");
-    closeButton.addClickListener(event -> {
-      refresh();
-      fireEvent(new CloseEvent(this));
-    });
-
-    row3.add(applyButton, resetButton, closeButton);
+    row3.add(applyButton, resetButton);
 
     add(row1, row2, row3);
 
@@ -117,14 +112,6 @@ public class TaskFilterForm extends VerticalLayout {
 
     public FilterChangedEvent(TaskFilterForm source, TaskFilterSpec filterSpec) {
       super(source, filterSpec);
-    }
-  }
-
-  public static class CloseEvent extends TaskFilterEvent {
-    private static final long serialVersionUID = 1L;
-
-    public CloseEvent(TaskFilterForm source) {
-      super(source, null);
     }
   }
 
