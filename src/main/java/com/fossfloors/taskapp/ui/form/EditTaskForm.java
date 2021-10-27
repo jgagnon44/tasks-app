@@ -125,8 +125,6 @@ public class EditTaskForm extends VerticalLayout {
     description.addClassName("task-description");
     description.setWidthFull();
 
-    HorizontalLayout row2 = new HorizontalLayout();
-
     type = new ComboBox<>("Task Type");
     type.setItems(Task.Type.ONE_TIME, Task.Type.RECURRING);
 
@@ -142,10 +140,9 @@ public class EditTaskForm extends VerticalLayout {
       this.getUI().ifPresent(ui -> ui.navigate(route));
     });
 
+    HorizontalLayout row2 = new HorizontalLayout();
     row2.add(type, priority, notesCount, editNotesButton);
     row2.setDefaultVerticalComponentAlignment(Alignment.END);
-
-    HorizontalLayout row3 = new HorizontalLayout();
 
     dateCreated = new TextField("Created");
     dateCreated.setReadOnly(true);
@@ -157,6 +154,7 @@ public class EditTaskForm extends VerticalLayout {
     dateStarted = new DatePicker("Started");
     dateCompleted = new DatePicker("Completed");
 
+    HorizontalLayout row3 = new HorizontalLayout();
     row3.add(dateCreated, dateModified, dateDue, dateStarted, dateCompleted);
 
     layout.add(title, description, row2, row3);
