@@ -61,8 +61,8 @@ public class EditTaskForm extends VerticalLayout {
   }
 
   public EditTaskForm() {
-    addClassName("edit-task-form");
-    setSizeFull();
+    this.addClassName("edit-task-form");
+    this.setSizeFull();
     configureView();
     bindData();
   }
