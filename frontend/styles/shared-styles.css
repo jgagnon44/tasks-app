@@ -1,4 +1,7 @@
-/* Main layout */
+
+* {
+	font-size: medium;
+}
 
 h1 {
 	color: chocolate;
@@ -7,6 +10,15 @@ h1 {
 a[highlight] {
     font-weight: bold;
     text-decoration: underline;
+}
+
+.page-title {
+	padding: 5px;
+	width: 100%;
+	font-size: x-large;
+	color: black;
+	background-color: silver;
+	text-align: left;
 }
 
 .header {
@@ -50,10 +62,9 @@ a[highlight] {
 	flex: 2;
 }
 
-
-/* List view */
-.list-view .content {
+.task-list-view .content {
     display: flex;
+    background-color: lightgrey;
 }
 
 .list-view .contact-grid {
