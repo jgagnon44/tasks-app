@@ -34,8 +34,7 @@ public class TaskFilterForm extends VerticalLayout {
 
   public TaskFilterForm(TaskFilterSpec filterBean) {
     this.filterBean = filterBean;
-
-    addClassName("task-filter-view");
+    this.addClassName("task-filter-form");
     configureView();
   }
 

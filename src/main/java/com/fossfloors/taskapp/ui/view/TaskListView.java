@@ -42,10 +42,8 @@ public class TaskListView extends VerticalLayout {
 
   public TaskListView(TaskService taskService) {
     this.taskService = taskService;
-
     this.addClassName("task-list-view");
-    setSizeFull();
-
+    this.setSizeFull();
     configureView();
 
     editForm.addListener(EditTaskForm.SaveEvent.class, this::saveTask);
