@@ -30,9 +30,9 @@ public class Task extends AbstractEntity {
 
   @NotNull
   @NotEmpty
-  private String         title;
+  private String         title       = "";
 
-  private String         description;
+  private String         description = "";
 
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -47,7 +47,7 @@ public class Task extends AbstractEntity {
   private Priority       priority;
 
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-  private List<TaskNote> notes = new ArrayList<>();
+  private List<TaskNote> notes       = new ArrayList<>();
 
   private LocalDate      dateClosed;
   private LocalDate      dateDue;
