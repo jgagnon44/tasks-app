@@ -16,6 +16,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -34,6 +35,8 @@ public class TaskListView extends VerticalLayout {
   private Grid<Task>        grid;
 
   private Button            addButton;
+  private Button            editButton;
+  private Button            deleteButton;
   private Button            filtersButton;
 
   private TaskFilterSpec    filterBean       = new TaskFilterSpec();
@@ -79,21 +82,29 @@ public class TaskListView extends VerticalLayout {
     HorizontalLayout layout = new HorizontalLayout();
 
     addButton = new Button("Add", this::add);
-    addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+    editButton = new Button("Edit", this::edit);
+    editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    editButton.setEnabled(false);
+
+    deleteButton = new Button("Delete", this::delete);
+    deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+    deleteButton.setEnabled(false);
 
     filtersButton = new Button("Filters");
     filtersButton.addClickListener(event -> {
       openFilterDialog();
     });
 
-    layout.add(addButton, filtersButton);
+    layout.add(addButton, editButton, deleteButton, filtersButton);
     return layout;
   }
 
-  // @formatter:off
   private void configureGrid() {
     grid = new Grid<>();
     grid.addClassName("tasks-grid");
+
+    grid.setSelectionMode(SelectionMode.MULTI);
 
     grid.addColumn(Task::getTitle).setHeader("Title");
     grid.addColumn(Task::getState).setHeader("State");
@@ -101,7 +112,7 @@ public class TaskListView extends VerticalLayout {
     grid.addColumn(Task::getType).setHeader("Type");
 
     grid.addColumn(new LocalDateTimeRenderer<>(Task::getDateCreated, "MM/dd/yyyy HH:mm:ss"))
-      .setHeader("Created");
+        .setHeader("Created");
 
     grid.getColumns().forEach(col -> {
       col.setAutoWidth(true);
@@ -109,19 +120,38 @@ public class TaskListView extends VerticalLayout {
       col.setSortable(true);
     });
 
-    grid.asSingleSelect().addValueChangeListener(event -> {
-      editTask(event.getValue());
+    grid.asMultiSelect().addSelectionListener(event -> {
+      editButton.setEnabled(event.getAllSelectedItems().size() == 1);
+      deleteButton.setEnabled(!event.getAllSelectedItems().isEmpty());
     });
   }
-  // @formatter:on
+
+  private void refreshGrid(TaskFilterSpec filterSpec) {
+    grid.setItems(taskService.filter(filterSpec));
+  }
 
   private void applyFilter(TaskFilterForm.FilterChangedEvent event) {
-    grid.setItems(taskService.filter(event.getFilterSpec()));
+    refreshGrid(event.getFilterSpec());
   }
 
   private void add(ClickEvent<?> event) {
-    grid.asSingleSelect().clear();
     editTask(new Task());
+    refreshGrid(filterBean);
+  }
+
+  private void edit(ClickEvent<?> event) {
+    grid.getSelectedItems().forEach(task -> {
+      editTask(task);
+      grid.deselect(task);
+    });
+  }
+
+  private void delete(ClickEvent<?> event) {
+    grid.getSelectedItems().forEach(task -> {
+      deleteTask(task);
+    });
+
+    refreshGrid(filterBean);
   }
 
   private void editTask(Task task) {
@@ -132,6 +162,11 @@ public class TaskListView extends VerticalLayout {
     } else {
       closeEditor();
     }
+  }
+
+  private void deleteTask(Task task) {
+    task.setState(Task.State.DELETED);
+    taskService.save(task);
   }
 
   private void saveTask(EditTaskForm.SaveEvent event) {
@@ -180,7 +215,6 @@ public class TaskListView extends VerticalLayout {
   }
 
   private void closeEditor() {
-    grid.asSingleSelect().clear();
     editForm.setTask(null);
     editForm.setVisible(false);
     this.removeClassName("editing-task");
