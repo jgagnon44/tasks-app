@@ -3,10 +3,6 @@
 	font-size: medium;
 }
 
-h1 {
-	color: chocolate;
-}
-
 a[highlight] {
     font-weight: bold;
     text-decoration: underline;
@@ -17,13 +13,28 @@ a[highlight] {
 	width: 100%;
 	font-size: x-large;
 	color: black;
-	background-color: silver;
+	background-color: lightgray;
 	text-align: left;
 }
 
 .header {
     padding: 0 var(--lumo-space-m);
 }
+
+.task-list-view {
+	display: flex;
+	flex-direction: row;
+}
+
+.task-list-panel {
+	order: 1;
+}
+
+.edit-task-form {
+	order: 2;
+}
+
+/*
 
 .header h1.logo {
     font-size: 1em;
@@ -51,11 +62,6 @@ a[highlight] {
 
 .notes-grid {
 	flex: 2;
-}
-
-.edit-task-form {
-	flex: 2;	
-	padding: var(--lumo-space-m);
 }
 
 .notes-grid {
@@ -87,3 +93,5 @@ a[highlight] {
     font-size: 4em;
     margin: 1em 0;
 }
+
+*/
