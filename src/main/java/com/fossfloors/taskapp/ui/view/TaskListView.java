@@ -26,7 +26,7 @@ import com.vaadin.flow.shared.Registration;
 
 @Route("main")
 @CssImport("./styles/shared-styles.css")
-public class TaskListView extends VerticalLayout {
+public class TaskListView extends HorizontalLayout {
 
   private static final long serialVersionUID = 1L;
 
@@ -45,8 +45,8 @@ public class TaskListView extends VerticalLayout {
 
   public TaskListView(TaskService taskService) {
     this.taskService = taskService;
-    this.addClassName("task-list-view");
     this.setSizeFull();
+    this.addClassName("task-list-view");
     configureView();
 
     editForm.addListener(EditTaskForm.SaveEvent.class, this::saveTask);
@@ -66,6 +66,16 @@ public class TaskListView extends VerticalLayout {
   }
 
   private void configureView() {
+    editForm = new EditTaskForm();
+    add(configListPanel(), editForm);
+    closeEditor();
+  }
+
+  private Component configListPanel() {
+    VerticalLayout layout = new VerticalLayout();
+    
+    layout.addClassName("task-list-panel");
+
     Div title = new Div();
     title.setText("Tasks List");
     title.addClassName("page-title");
@@ -73,9 +83,8 @@ public class TaskListView extends VerticalLayout {
     configureGrid();
     editForm = new EditTaskForm();
 
-    add(title, configTopPanel(), grid, editForm);
-
-    closeEditor();
+    layout.add(title, configTopPanel(), grid);
+    return layout;
   }
 
   private Component configTopPanel() {
@@ -135,7 +144,7 @@ public class TaskListView extends VerticalLayout {
   }
 
   private void add(ClickEvent<?> event) {
-    editTask(new Task());
+    editTask(new Task("new task"));
     refreshGrid(filterBean);
   }
 
@@ -162,6 +171,12 @@ public class TaskListView extends VerticalLayout {
     } else {
       closeEditor();
     }
+  }
+
+  private void closeEditor() {
+    editForm.setTask(null);
+    editForm.setVisible(false);
+    this.removeClassName("editing-task");
   }
 
   private void deleteTask(Task task) {
@@ -212,12 +227,6 @@ public class TaskListView extends VerticalLayout {
     dialog.setCloseOnEsc(true);
 
     dialog.open();
-  }
-
-  private void closeEditor() {
-    editForm.setTask(null);
-    editForm.setVisible(false);
-    this.removeClassName("editing-task");
   }
 
 }
