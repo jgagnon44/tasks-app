@@ -144,7 +144,7 @@ public class TaskListView extends HorizontalLayout {
   }
 
   private void add(ClickEvent<?> event) {
-    editTask(new Task("new task"));
+    editTask(new Task());
     refreshGrid(filterBean);
   }
 

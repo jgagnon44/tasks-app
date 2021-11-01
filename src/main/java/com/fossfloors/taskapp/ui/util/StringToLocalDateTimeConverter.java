@@ -37,7 +37,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
     if (value != null) {
       return value.format(formatter);
     } else {
-      return null;
+      return "";
     }
   }
 
