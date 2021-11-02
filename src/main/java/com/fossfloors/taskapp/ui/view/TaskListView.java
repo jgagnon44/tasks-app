@@ -150,8 +150,8 @@ public class TaskListView extends HorizontalLayout {
 
   private void edit(ClickEvent<?> event) {
     grid.getSelectedItems().forEach(task -> {
-      editTask(task);
       grid.deselect(task);
+      editTask(task);
     });
   }
 
@@ -177,6 +177,7 @@ public class TaskListView extends HorizontalLayout {
     editForm.setTask(null);
     editForm.setVisible(false);
     this.removeClassName("editing-task");
+    refreshGrid(filterBean);
   }
 
   private void deleteTask(Task task) {
