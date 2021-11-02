@@ -17,6 +17,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -80,7 +81,11 @@ public class EditTaskForm extends VerticalLayout {
   }
 
   private void configureView() {
-    add(configDetailsPane(), configButtons());
+    Div title = new Div();
+    title.setText("Edit Task");
+    title.addClassName("page-title");
+
+    add(title, configDetails(), configDates(), configButtons());
     setDefaultHorizontalComponentAlignment(Alignment.START);
   }
 
@@ -114,7 +119,7 @@ public class EditTaskForm extends VerticalLayout {
   }
   // @formatter:on
 
-  private Component configDetailsPane() {
+  private Component configDetails() {
     VerticalLayout layout = new VerticalLayout();
     layout.setPadding(false);
 
@@ -144,20 +149,32 @@ public class EditTaskForm extends VerticalLayout {
     row2.add(type, priority, notesCount, editNotesButton);
     row2.setDefaultVerticalComponentAlignment(Alignment.END);
 
+    layout.add(title, description, row2);
+    return layout;
+  }
+
+  private Component configDates() {
+    VerticalLayout layout = new VerticalLayout();
+
+    HorizontalLayout row1 = new HorizontalLayout();
+
+    dateDue = new DatePicker("Due");
+    dateStarted = new DatePicker("Started");
+    dateCompleted = new DatePicker("Completed");
+
+    row1.add(dateDue, dateStarted, dateCompleted);
+
+    HorizontalLayout row2 = new HorizontalLayout();
+
     dateCreated = new TextField("Created");
     dateCreated.setReadOnly(true);
 
     dateModified = new TextField("Last Modified");
     dateModified.setReadOnly(true);
 
-    dateDue = new DatePicker("Due");
-    dateStarted = new DatePicker("Started");
-    dateCompleted = new DatePicker("Completed");
+    row2.add(dateCreated, dateModified);
 
-    HorizontalLayout row3 = new HorizontalLayout();
-    row3.add(dateCreated, dateModified, dateDue, dateStarted, dateCompleted);
-
-    layout.add(title, description, row2, row3);
+    layout.add(row1, row2);
     return layout;
   }
 
