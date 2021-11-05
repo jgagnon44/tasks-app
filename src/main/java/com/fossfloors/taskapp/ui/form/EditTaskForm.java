@@ -193,7 +193,7 @@ public class EditTaskForm extends VerticalLayout {
     cancelButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
     cancelButton.addClickShortcut(Key.ESCAPE);
 
-    layout.add(otherActions, saveButton/* , deleteButton */, cancelButton);
+    layout.add(otherActions, saveButton, cancelButton);
     layout.setDefaultVerticalComponentAlignment(Alignment.END);
     return layout;
   }
