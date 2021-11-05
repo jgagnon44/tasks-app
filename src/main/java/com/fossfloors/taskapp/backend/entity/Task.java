@@ -21,7 +21,7 @@ public class Task extends AbstractEntity {
   }
 
   public enum State {
-    ALL, OPEN, CLOSED, ARCHIVED, DELETED
+    ALL, OPEN, CLOSED, ARCHIVED
   }
 
   public enum Priority {
