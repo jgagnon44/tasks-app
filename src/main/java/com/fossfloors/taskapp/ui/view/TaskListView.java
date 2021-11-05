@@ -108,6 +108,9 @@ public class TaskListView extends HorizontalLayout {
     grid.addColumn(new LocalDateTimeRenderer<>(Task::getDateCreated, "MM/dd/yyyy HH:mm:ss"))
         .setHeader("Created");
 
+    grid.addColumn(new LocalDateTimeRenderer<>(Task::getDateModified, "MM/dd/yyyy HH:mm:ss"))
+        .setHeader("Last Modified");
+
     grid.getColumns().forEach(col -> {
       col.setAutoWidth(true);
       col.setResizable(true);
