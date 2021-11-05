@@ -49,8 +49,7 @@ public class EditTaskForm extends VerticalLayout {
   private DatePicker              dateCompleted;
 
   private Button                  saveButton;
-  private Button                  deleteButton;
-  private Button                  closeButton;
+  private Button                  cancelButton;
   private ComboBox<TaskAction>    otherActions;
 
   private Binder<Task>            binder;
@@ -188,17 +187,13 @@ public class EditTaskForm extends VerticalLayout {
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveButton.addClickListener(event -> validateAndSave());
 
-    deleteButton = new Button("Delete");
-    deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-    deleteButton.addClickListener(event -> fireEvent(new DeleteEvent(this, task)));
-
     otherActions = new ComboBox<>("Other Actions");
 
-    closeButton = new Button("Close");
-    closeButton.addClickListener(event -> fireEvent(new CloseEvent(this)));
-    closeButton.addClickShortcut(Key.ESCAPE);
+    cancelButton = new Button("Cancel");
+    cancelButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
+    cancelButton.addClickShortcut(Key.ESCAPE);
 
-    layout.add(otherActions, saveButton, deleteButton, closeButton);
+    layout.add(otherActions, saveButton/* , deleteButton */, cancelButton);
     layout.setDefaultVerticalComponentAlignment(Alignment.END);
     return layout;
   }
@@ -268,18 +263,10 @@ public class EditTaskForm extends VerticalLayout {
     }
   }
 
-  public static class DeleteEvent extends EditTaskFormEvent {
+  public static class CancelEvent extends EditTaskFormEvent {
     private static final long serialVersionUID = 1L;
 
-    public DeleteEvent(EditTaskForm source, Task task) {
-      super(source, task);
-    }
-  }
-
-  public static class CloseEvent extends EditTaskFormEvent {
-    private static final long serialVersionUID = 1L;
-
-    public CloseEvent(EditTaskForm source) {
+    public CancelEvent(EditTaskForm source) {
       super(source, null);
     }
   }
