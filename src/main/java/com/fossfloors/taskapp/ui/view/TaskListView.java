@@ -5,15 +5,14 @@ import javax.annotation.PostConstruct;
 import com.fossfloors.taskapp.backend.beans.TaskFilterSpec;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.service.TaskService;
+import com.fossfloors.taskapp.ui.dialog.TaskFilterDialog;
 import com.fossfloors.taskapp.ui.form.EditTaskForm;
-import com.fossfloors.taskapp.ui.form.TaskFilterForm;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -126,7 +125,7 @@ public class TaskListView extends HorizontalLayout {
     grid.setItems(taskService.filter(filterSpec));
   }
 
-  private void applyFilter(TaskFilterForm.FilterChangedEvent event) {
+  private void applyFilter(TaskFilterDialog.FilterChangedEvent event) {
     refreshGrid(event.getFilterSpec());
   }
 
@@ -177,16 +176,15 @@ public class TaskListView extends HorizontalLayout {
   }
 
   private void openFilterDialog() {
-    TaskFilterForm form = new TaskFilterForm(filterBean);
-    form.addListener(TaskFilterForm.FilterChangedEvent.class, this::applyFilter);
+    TaskFilterDialog form = new TaskFilterDialog(filterBean);
+    form.setModal(true);
+    form.setDraggable(true);
+    form.setCloseOnEsc(true);
+    form.setCloseOnOutsideClick(true);
 
-    Dialog dialog = new Dialog(form);
-    dialog.setModal(true);
-    dialog.setDraggable(true);
-    dialog.setCloseOnOutsideClick(true);
-    dialog.setCloseOnEsc(true);
+    form.addListener(TaskFilterDialog.FilterChangedEvent.class, this::applyFilter);
 
-    dialog.open();
+    form.open();
   }
 
 }
