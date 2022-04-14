@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.ui.util.StringToLocalDateTimeConverter;
-import com.fossfloors.taskapp.ui.view.NotesListView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -17,6 +16,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -24,7 +24,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.shared.Registration;
 
 @CssImport("./styles/shared-styles.css")
@@ -37,10 +36,9 @@ public class EditTaskForm extends VerticalLayout {
   private TextField               title;
   private TextArea                description;
 
+  private ComboBox<Task.State>    state;
   private ComboBox<Task.Type>     type;
   private ComboBox<Task.Priority> priority;
-  private TextField               notesCount;
-  private Button                  editNotesButton;
 
   private TextField               dateCreated;
   private TextField               dateModified;
@@ -55,6 +53,8 @@ public class EditTaskForm extends VerticalLayout {
   private Binder<Task>            binder;
 
   private Task                    task;
+
+  private EditNotesForm           notesForm;
 
   public enum TaskAction {
     CLOSE, REOPEN, ARCHIVE, UNARCHIVE
@@ -76,58 +76,34 @@ public class EditTaskForm extends VerticalLayout {
   public void setTask(Task task) {
     this.task = task;
     binder.readBean(task);
+
+    if (task != null) {
+      notesForm.setTask(task);
+    }
+
     updateActions();
   }
 
   private void configureView() {
-    Div title = new Div();
-    title.setText("Edit Task");
-    title.addClassName("page-title");
-
-    add(title, configDetails(), configDates(), configButtons());
-    setDefaultHorizontalComponentAlignment(Alignment.START);
-  }
-
-  // @formatter:off
-  private void bindData() {
-    binder = new Binder<>(Task.class);
-
-    binder.forField(title)
-      .asRequired("Title required")
-      .bind("title");
-
-    binder.forField(description).bind("description");
-    binder.forField(type).bind("type");
-    binder.forField(priority).bind("priority");
-
-    binder.forField(notesCount).bind(task -> {
-      return String.valueOf(task.getNotes().size());
-    }, (task, value) -> {});
-
-    binder.forField(dateCreated)
-      .withConverter(new StringToLocalDateTimeConverter())
-      .bind("dateCreated");
-
-    binder.forField(dateModified)
-      .withConverter(new StringToLocalDateTimeConverter())
-      .bind("dateModified");
-
-    binder.forField(dateDue).bind("dateDue");
-    binder.forField(dateStarted).bind("dateStarted");
-    binder.forField(dateCompleted).bind("dateCompleted");
-  }
-  // @formatter:on
-
-  private Component configDetails() {
-    VerticalLayout layout = new VerticalLayout();
-    layout.setPadding(false);
+    Div pageTitle = new Div();
+    pageTitle.setText("Edit Task");
+    pageTitle.addClassName("page-title");
 
     title = new TextField("Title");
-    title.setWidthFull();
+    title.addClassName("task-title");
 
     description = new TextArea("Description");
     description.addClassName("task-description");
-    description.setWidthFull();
+
+    add(pageTitle, configButtons(), title, description, configDetails(), configNotes());
+    setDefaultHorizontalComponentAlignment(Alignment.START);
+  }
+
+  private Component configDetails() {
+    VerticalLayout layout = new VerticalLayout();
+
+    state = new ComboBox<>("State");
+    state.setReadOnly(true);
 
     type = new ComboBox<>("Task Type");
     type.setItems(Task.Type.ONE_TIME, Task.Type.RECURRING);
@@ -135,35 +111,15 @@ public class EditTaskForm extends VerticalLayout {
     priority = new ComboBox<>("Priority");
     priority.setItems(Task.Priority.LOW, Task.Priority.MEDIUM, Task.Priority.HIGH);
 
-    notesCount = new TextField("Notes Count");
-    notesCount.setReadOnly(true);
-
-    editNotesButton = new Button("Edit Notes");
-    editNotesButton.addClickListener(event -> {
-      String route = RouteConfiguration.forSessionScope().getUrl(NotesListView.class, task.getId());
-      this.getUI().ifPresent(ui -> ui.navigate(route));
-    });
-
-    HorizontalLayout row2 = new HorizontalLayout();
-    row2.add(type, priority, notesCount, editNotesButton);
-    row2.setDefaultVerticalComponentAlignment(Alignment.END);
-
-    layout.add(title, description, row2);
-    return layout;
-  }
-
-  private Component configDates() {
-    VerticalLayout layout = new VerticalLayout();
-
     HorizontalLayout row1 = new HorizontalLayout();
+    row1.add(state, type, priority);
 
     dateDue = new DatePicker("Due");
     dateStarted = new DatePicker("Started");
     dateCompleted = new DatePicker("Completed");
 
-    row1.add(dateDue, dateStarted, dateCompleted);
-
     HorizontalLayout row2 = new HorizontalLayout();
+    row2.add(dateDue, dateStarted, dateCompleted);
 
     dateCreated = new TextField("Created");
     dateCreated.setReadOnly(true);
@@ -171,10 +127,30 @@ public class EditTaskForm extends VerticalLayout {
     dateModified = new TextField("Last Modified");
     dateModified.setReadOnly(true);
 
-    row2.add(dateCreated, dateModified);
+    HorizontalLayout row3 = new HorizontalLayout();
+    row3.add(dateCreated, dateModified);
 
-    layout.add(row1, row2);
-    return layout;
+    layout.add(row1, row2, row3);
+
+    Details details = new Details();
+    details.setSummaryText("Details");
+    details.addContent(layout);
+    details.addClassName("task-detail");
+    details.setOpened(false);
+
+    return details;
+  }
+
+  private Component configNotes() {
+    notesForm = new EditNotesForm();
+
+    Details details = new Details();
+    details.setSummaryText("Notes");
+    details.addContent(notesForm);
+    details.addClassName("task-notes-detail");
+    details.setOpened(false);
+
+    return details;
   }
 
   private Component configButtons() {
@@ -197,6 +173,33 @@ public class EditTaskForm extends VerticalLayout {
     layout.setDefaultVerticalComponentAlignment(Alignment.END);
     return layout;
   }
+
+  // @formatter:off
+  private void bindData() {
+    binder = new Binder<>(Task.class);
+  
+    binder.forField(title)
+      .asRequired("Title required")
+      .bind("title");
+  
+    binder.forField(description).bind("description");
+    binder.forField(state).bind("state");
+    binder.forField(type).bind("type");
+    binder.forField(priority).bind("priority");
+  
+    binder.forField(dateCreated)
+      .withConverter(new StringToLocalDateTimeConverter())
+      .bind("dateCreated");
+  
+    binder.forField(dateModified)
+      .withConverter(new StringToLocalDateTimeConverter())
+      .bind("dateModified");
+  
+    binder.forField(dateDue).bind("dateDue");
+    binder.forField(dateStarted).bind("dateStarted");
+    binder.forField(dateCompleted).bind("dateCompleted");
+  }
+  // @formatter:on
 
   private void updateActions() {
     if (task != null) {
