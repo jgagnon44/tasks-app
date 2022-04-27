@@ -1,6 +1,6 @@
 
 * {
-	font-size: medium;
+	font-size: 1em;
 	padding: 2px;
 }
 
@@ -27,6 +27,25 @@ a[highlight] {
 	order: 1;
 }
 
+.task-title {
+	width: 100%;
+}
+
+.task-description {
+	width: 100%;
+	height: 100px;
+}
+
 .edit-task-form {
 	order: 2;
 }
+
+.task-notes-detail {
+	width: 100%;
+}
+
+.task-notes-grid {
+	height: 200px;
+	width: 100%;
+}
+
