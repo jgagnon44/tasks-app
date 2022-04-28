@@ -1,0 +1,166 @@
+package com.fossfloors.taskapp.ui;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fossfloors.taskapp.backend.beans.UserRegistration;
+import com.fossfloors.taskapp.backend.service.AuthenticationService;
+import com.fossfloors.taskapp.backend.service.AuthenticationService.Status;
+import com.fossfloors.taskapp.backend.validator.PasswordValidator;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
+
+@Route("register")
+@CssImport("./styles/shared-styles.css")
+@SuppressWarnings("serial")
+public class RegisterView extends VerticalLayout {
+
+  private static final Logger         logger = LoggerFactory.getLogger(RegisterView.class);
+
+  private final AuthenticationService authService;
+
+  private TextField                   firstName;
+  private TextField                   lastName;
+  private EmailField                  email;
+  private TextField                   userName;
+  private PasswordField               pass1;
+  private PasswordField               pass2;
+
+  private Binder<UserRegistration>    binder;
+
+  public RegisterView(AuthenticationService authService) {
+    this.authService = authService;
+    addClassName("register-view");
+    setSizeFull();
+    configureView();
+    bindData();
+  }
+
+  private void configureView() {
+    add(new H1("Register User"), configNameLayout(), configLoginLayout(), configButtonLayout());
+    setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+  }
+
+  private HorizontalLayout configNameLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+
+    firstName = new TextField("First Name", "first name");
+    firstName.focus();
+
+    lastName = new TextField("Last Name", "last name");
+
+    email = new EmailField("E-mail", "e-mail");
+
+    layout.add(firstName, lastName, email);
+    return layout;
+  }
+
+  private HorizontalLayout configLoginLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+
+    userName = new TextField("User Name", "user name");
+
+    pass1 = new PasswordField("Password");
+    pass2 = new PasswordField("Confirm Password");
+
+    layout.add(userName, pass1, pass2);
+    return layout;
+  }
+
+  private HorizontalLayout configButtonLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+
+    Button addButton = new Button("Register User", this::registerUser);
+    addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    addButton.addClickShortcut(Key.ENTER);
+
+    RouterLink login = new RouterLink("Return to Login", LoginView.class);
+
+    layout.add(addButton, login);
+    layout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+
+    return layout;
+  }
+
+  // @formatter:off
+  private void bindData() {
+    binder = new Binder<>(UserRegistration.class);
+    binder.setBean(new UserRegistration());
+
+    binder.forField(firstName)
+      .asRequired()
+      .bind(UserRegistration::getFirstName, UserRegistration::setFirstName);
+    
+    binder.forField(lastName)
+      .asRequired()
+      .bind(UserRegistration::getLastName, UserRegistration::setLastName);
+    
+    binder.forField(email)
+      .asRequired()
+      .withValidator(new EmailValidator("Invalid e-mail address"))
+      .bind(UserRegistration::getEmail, UserRegistration::setEmail);
+    
+    binder.forField(userName)
+      .asRequired()
+      .bind(UserRegistration::getUserName, UserRegistration::setUserName);
+    
+    binder.forField(pass1)
+      .asRequired()
+      .withValidator(new PasswordValidator("Invalid password"))
+      .bind(UserRegistration::getPass1, UserRegistration::setPass1);
+    
+    binder.forField(pass2)
+      .asRequired()
+      .withValidator(new PasswordValidator("Invalid password"))
+      .bind(UserRegistration::getPass2, UserRegistration::setPass2);
+  }
+  // @formatter:on
+
+  private void registerUser(ClickEvent<?> event) {
+    BinderValidationStatus<UserRegistration> status = binder.validate();
+    status.getValidationErrors();
+    System.out.println("validation status: " + status);
+
+    if (binder.isValid()) {
+      logger.debug("valid");
+      Status regStatus = authService.register(binder.getBean());
+
+      switch (regStatus) {
+        case INVALID_PASSWORD:
+          new Dialog(new Text("Password mismatch")).open();
+          break;
+
+        case USER_EXISTS:
+          new Dialog(new Text("User already exists")).open();
+          break;
+
+        case SUCCESS:
+          new Dialog(new Text("User successfully registered")).open();
+          // Navigate to Login screen.
+          getUI().ifPresent(i -> i.navigate("login"));
+          break;
+
+        default:
+          logger.error("Unexpected status: {}", regStatus);
+          break;
+      }
+    }
+  }
+
+}

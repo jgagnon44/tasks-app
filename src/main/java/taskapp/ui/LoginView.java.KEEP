@@ -1,0 +1,69 @@
+package com.fossfloors.taskapp.ui;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fossfloors.taskapp.backend.beans.LoginData;
+import com.fossfloors.taskapp.backend.service.AuthenticationService;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
+
+@Route("login")
+@CssImport("./styles/shared-styles.css")
+@SuppressWarnings("serial")
+public class LoginView extends VerticalLayout {
+
+  private static final Logger         logger = LoggerFactory.getLogger(LoginView.class);
+
+  private final AuthenticationService authService;
+
+  private TextField                   user;
+  private PasswordField               password;
+
+  private Binder<LoginData>           binder;
+
+  public LoginView(AuthenticationService authService) {
+    this.authService = authService;
+    addClassName("login-view");
+    setSizeFull();
+    configureView();
+  }
+
+  private void configureView() {
+    user = new TextField("User Name");
+    user.focus();
+
+    password = new PasswordField("Password");
+
+    Button loginButton = new Button("Login", this::login);
+    loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    loginButton.addClickShortcut(Key.ENTER);
+
+    RouterLink register = new RouterLink("Register", RegisterView.class);
+    RouterLink forgot = new RouterLink("Forgot", ForgotPasswordView.class);
+    HorizontalLayout linksLayout = new HorizontalLayout(register, forgot);
+
+    add(new H1("Login"), user, password, loginButton, linksLayout);
+    setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+    binder = new Binder<>(LoginData.class);
+    binder.setBean(new LoginData());
+    binder.bindInstanceFields(this);
+  }
+
+  private void login(ClickEvent<?> event) {
+    authService.login(binder.getBean());
+  }
+
+}

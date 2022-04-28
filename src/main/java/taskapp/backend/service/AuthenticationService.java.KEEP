@@ -1,0 +1,72 @@
+package com.fossfloors.taskapp.backend.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fossfloors.taskapp.backend.beans.ForgotPassword;
+import com.fossfloors.taskapp.backend.beans.LoginData;
+import com.fossfloors.taskapp.backend.beans.User;
+import com.fossfloors.taskapp.backend.beans.UserRegistration;
+import com.fossfloors.taskapp.backend.repository.UserRepository;
+
+//@Service
+//@Transactional
+public class AuthenticationService {
+
+  private static final Logger  logger = LoggerFactory.getLogger(AuthenticationService.class);
+
+  private final UserRepository userRepository;
+
+  public enum Status {
+    SUCCESS, INVALID_PASSWORD, USER_EXISTS, USER_NOT_FOUND
+  }
+
+  public AuthenticationService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  public void login(LoginData loginData) {
+    logger.debug(loginData.toString());
+    // TODO
+  }
+
+  public Status register(UserRegistration registration) {
+    User user = userRepository.findByUserName(registration.getUserName());
+
+    if (user != null) {
+      return Status.USER_EXISTS;
+    } else {
+      // Check if entered password values match.
+      if (!registration.getPass1().equals(registration.getPass2())) {
+        return Status.INVALID_PASSWORD;
+      }
+
+      // Create and save new User.
+      user = new User();
+      user.setFirstName(registration.getFirstName());
+      user.setLastName(registration.getLastName());
+      user.setEmail(registration.getEmail());
+      user.setUserName(registration.getUserName());
+      user.setPassword(registration.getPass1());
+
+      User savedUser = userRepository.save(user);
+      logger.debug("created user: {}", savedUser);
+      return Status.SUCCESS;
+    }
+  }
+
+  public void passwordRequest(ForgotPassword forgotData) {
+    logger.debug(forgotData.toString());
+    User user = userRepository.findByEmailAndUserName(forgotData.getEmail(),
+        forgotData.getUserName());
+
+    if (user != null) {
+      logger.debug("found user: {}", user);
+    } else {
+      logger.debug("user not found");
+    }
+  }
+
+}
