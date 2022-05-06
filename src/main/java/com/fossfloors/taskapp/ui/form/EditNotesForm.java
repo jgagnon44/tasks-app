@@ -24,7 +24,7 @@ public class EditNotesForm extends VerticalLayout {
 
   private static final Logger logger           = LoggerFactory.getLogger(EditNotesForm.class);
 
-  private Button              addButton;
+  private Button              newButton;
 
   private TextField           searchField;
   private Button              searchButton;
@@ -90,9 +90,9 @@ public class EditNotesForm extends VerticalLayout {
   private Component configButtons() {
     HorizontalLayout layout = new HorizontalLayout();
 
-    addButton = new Button("Add");
-    addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    addButton.addClickListener(this::add);
+    newButton = new Button("New");
+    newButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    newButton.addClickListener(this::addNew);
 
     searchField = new TextField();
     searchField.setPlaceholder("Enter search text");
@@ -100,7 +100,7 @@ public class EditNotesForm extends VerticalLayout {
     searchButton = new Button("Search");
     // TODO implement search
 
-    layout.add(addButton, searchField, searchButton);
+    layout.add(newButton, searchField, searchButton);
     return layout;
   }
 
@@ -142,7 +142,7 @@ public class EditNotesForm extends VerticalLayout {
     return grid;
   }
 
-  private void add(ClickEvent<?> event) {
+  private void addNew(ClickEvent<?> event) {
     editNote(new TaskNote());
   }
 

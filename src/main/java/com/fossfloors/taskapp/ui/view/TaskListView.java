@@ -31,7 +31,7 @@ public class TaskListView extends HorizontalLayout {
 
   private Grid<Task>        grid;
 
-  private Button            addButton;
+  private Button            newButton;
   private Button            filtersButton;
 
   private TaskFilterSpec    filterBean       = new TaskFilterSpec();
@@ -84,14 +84,14 @@ public class TaskListView extends HorizontalLayout {
   private Component configTopPanel() {
     HorizontalLayout layout = new HorizontalLayout();
 
-    addButton = new Button("Add", this::add);
+    newButton = new Button("New", this::newTask);
 
     filtersButton = new Button("Filters");
     filtersButton.addClickListener(event -> {
       openFilterDialog();
     });
 
-    layout.add(addButton, filtersButton);
+    layout.add(newButton, filtersButton);
     return layout;
   }
 
@@ -129,7 +129,7 @@ public class TaskListView extends HorizontalLayout {
     refreshGrid(event.getFilterSpec());
   }
 
-  private void add(ClickEvent<?> event) {
+  private void newTask(ClickEvent<?> event) {
     editTask(new Task());
     refreshGrid(filterBean);
   }
