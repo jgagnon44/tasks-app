@@ -98,6 +98,7 @@ public class EditNotesForm extends VerticalLayout {
     searchField.setPlaceholder("Enter search text");
 
     searchButton = new Button("Search");
+    // TODO implement search
 
     layout.add(addButton, searchField, searchButton);
     return layout;
