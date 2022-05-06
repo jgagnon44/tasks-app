@@ -228,7 +228,7 @@ public class EditTaskForm extends VerticalLayout {
       binder.writeBean(task);
       fireEvent(new SaveEvent(this, task, close, Optional.ofNullable(otherActions.getValue())));
     } catch (ValidationException e) {
-      // TODO - temporary
+      // TODO - future development
       logger.error("field validation errors:");
       e.getFieldValidationErrors().forEach(er -> {
         logger.error("status: {}", er.getStatus());
