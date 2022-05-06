@@ -172,7 +172,10 @@ public class TaskListView extends HorizontalLayout {
     });
 
     taskService.save(task);
-    closeEditor();
+
+    if (event.getCloseEditor()) {
+      closeEditor();
+    }
   }
 
   private void openFilterDialog() {

@@ -47,6 +47,7 @@ public class EditTaskForm extends VerticalLayout {
   private DatePicker              dateCompleted;
 
   private Button                  saveButton;
+  private Button                  saveAndCloseButton;
   private Button                  cancelButton;
   private ComboBox<TaskAction>    otherActions;
 
@@ -159,17 +160,20 @@ public class EditTaskForm extends VerticalLayout {
     layout.setWidthFull();
     layout.setJustifyContentMode(JustifyContentMode.CENTER);
 
-    saveButton = new Button("Save");
-    saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    saveButton.addClickListener(event -> validateAndSave());
-
     otherActions = new ComboBox<>("Other Actions");
+
+    saveAndCloseButton = new Button("Save & Close");
+    saveAndCloseButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    saveAndCloseButton.addClickListener(event -> validateAndSave(true));
+
+    saveButton = new Button("Save");
+    saveButton.addClickListener(event -> validateAndSave(false));
 
     cancelButton = new Button("Cancel");
     cancelButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
     cancelButton.addClickShortcut(Key.ESCAPE);
 
-    layout.add(otherActions, saveButton, cancelButton);
+    layout.add(otherActions, saveAndCloseButton, saveButton, cancelButton);
     layout.setDefaultVerticalComponentAlignment(Alignment.END);
     return layout;
   }
@@ -219,10 +223,10 @@ public class EditTaskForm extends VerticalLayout {
     }
   }
 
-  private void validateAndSave() {
+  private void validateAndSave(boolean close) {
     try {
       binder.writeBean(task);
-      fireEvent(new SaveEvent(this, task, Optional.ofNullable(otherActions.getValue())));
+      fireEvent(new SaveEvent(this, task, close, Optional.ofNullable(otherActions.getValue())));
     } catch (ValidationException e) {
       // TODO - temporary
       logger.error("field validation errors:");
@@ -255,10 +259,17 @@ public class EditTaskForm extends VerticalLayout {
   public static class SaveEvent extends EditTaskFormEvent {
     private static final long    serialVersionUID = 1L;
     private Optional<TaskAction> otherAction;
+    private boolean              closeEditor;
 
-    public SaveEvent(EditTaskForm source, Task task, Optional<TaskAction> otherAction) {
+    public SaveEvent(EditTaskForm source, Task task, boolean closeEditor,
+        Optional<TaskAction> otherAction) {
       super(source, task);
+      this.closeEditor = closeEditor;
       this.otherAction = otherAction;
+    }
+
+    public boolean getCloseEditor() {
+      return closeEditor;
     }
 
     public Optional<TaskAction> getOtherAction() {
