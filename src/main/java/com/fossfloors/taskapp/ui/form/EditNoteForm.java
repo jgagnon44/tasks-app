@@ -9,7 +9,6 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -69,11 +68,9 @@ public class EditNoteForm extends VerticalLayout {
     layout.setJustifyContentMode(JustifyContentMode.CENTER);
 
     saveButton = new Button("Save");
-    saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveButton.addClickListener(event -> validateAndSave());
 
     deleteButton = new Button("Delete");
-    deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
     deleteButton.addClickListener(event -> fireEvent(new DeleteEvent(this, taskNote)));
 
     closeButton = new Button("Close");

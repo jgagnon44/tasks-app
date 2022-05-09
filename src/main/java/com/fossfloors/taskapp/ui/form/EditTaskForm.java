@@ -12,7 +12,6 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -163,7 +162,6 @@ public class EditTaskForm extends VerticalLayout {
     otherActions = new ComboBox<>("Other Actions");
 
     saveAndCloseButton = new Button("Save & Close");
-    saveAndCloseButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveAndCloseButton.addClickListener(event -> validateAndSave(true));
 
     saveButton = new Button("Save");

@@ -9,7 +9,6 @@ import com.fossfloors.taskapp.ui.dialog.ConfirmDeleteDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
@@ -91,7 +90,6 @@ public class EditNotesForm extends VerticalLayout {
     HorizontalLayout layout = new HorizontalLayout();
 
     newButton = new Button("New");
-    newButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     newButton.addClickListener(this::addNew);
 
     searchField = new TextField();
