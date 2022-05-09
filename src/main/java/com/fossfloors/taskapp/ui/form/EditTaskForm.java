@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
+import com.fossfloors.taskapp.ui.util.PagedTabs;
 import com.fossfloors.taskapp.ui.util.StringToLocalDateTimeConverter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -15,7 +16,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -47,7 +47,7 @@ public class EditTaskForm extends VerticalLayout {
 
   private Button                  saveButton;
   private Button                  saveAndCloseButton;
-  private Button                  cancelButton;
+  private Button                  closeButton;
   private ComboBox<TaskAction>    otherActions;
 
   private Binder<Task>            binder;
@@ -95,8 +95,15 @@ public class EditTaskForm extends VerticalLayout {
     description = new TextArea("Description");
     description.addClassName("task-description");
 
-    add(pageTitle, configButtons(), title, description, configDetails(), configNotes());
+    PagedTabs tabs = new PagedTabs(this);
+
+    add(pageTitle, configButtons(), title, description, tabs);
     setDefaultHorizontalComponentAlignment(Alignment.START);
+
+    tabs.add("Details", configDetails(), false);
+
+    notesForm = new EditNotesForm();
+    tabs.add("Notes", notesForm, false);
   }
 
   private Component configDetails() {
@@ -131,26 +138,7 @@ public class EditTaskForm extends VerticalLayout {
     row3.add(dateCreated, dateModified);
 
     layout.add(row1, row2, row3);
-
-    Details details = new Details();
-    details.setSummaryText("Details");
-    details.addContent(layout);
-    details.addClassName("task-detail");
-    details.setOpened(false);
-
-    return details;
-  }
-
-  private Component configNotes() {
-    notesForm = new EditNotesForm();
-
-    Details details = new Details();
-    details.setSummaryText("Notes");
-    details.addContent(notesForm);
-    details.addClassName("task-notes-detail");
-    details.setOpened(false);
-
-    return details;
+    return layout;
   }
 
   private Component configButtons() {
@@ -167,12 +155,12 @@ public class EditTaskForm extends VerticalLayout {
     saveButton = new Button("Save");
     saveButton.addClickListener(event -> validateAndSave(false));
 
-    cancelButton = new Button("Cancel");
-    cancelButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
-    cancelButton.addClickShortcut(Key.ESCAPE);
+    closeButton = new Button("Close");
+    closeButton.addClickListener(event -> fireEvent(new CancelEvent(this)));
+    closeButton.addClickShortcut(Key.ESCAPE);
 
-    layout.add(otherActions, saveAndCloseButton, saveButton, cancelButton);
-    layout.setDefaultVerticalComponentAlignment(Alignment.END);
+    layout.add(otherActions, saveAndCloseButton, saveButton, closeButton);
+    layout.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
     return layout;
   }
 
