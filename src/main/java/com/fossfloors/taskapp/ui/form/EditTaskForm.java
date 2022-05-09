@@ -85,6 +85,7 @@ public class EditTaskForm extends VerticalLayout {
     description.addClassName("task-description");
 
     PagedTabs tabs = new PagedTabs(this);
+    tabs.getContent().addClassName("paged-tabs-titles");
 
     add(pageTitle, configButtons(), title, description, tabs);
     setDefaultHorizontalComponentAlignment(Alignment.START);
