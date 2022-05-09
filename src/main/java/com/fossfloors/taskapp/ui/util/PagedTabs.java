@@ -33,7 +33,6 @@ public class PagedTabs extends Composite<Tabs> {
   public PagedTabs(HasComponents componentContainer) {
     this.componentContainer = componentContainer;
 
-    getContent().addClassName("paged-tabs-titles");
     getContent().addSelectedChangeListener(event -> {
       if (event.getSelectedTab() != null) {
         tabToComponent.values().forEach(component -> component.setVisible(false));
