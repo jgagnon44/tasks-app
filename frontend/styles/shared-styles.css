@@ -18,6 +18,11 @@ a[highlight] {
 	text-align: left;
 }
 
+.paged-tabs-titles {
+    padding: 2px;
+    text-align: center;
+}
+
 .task-list-view {
 	display: flex;
 	flex-direction: row;
