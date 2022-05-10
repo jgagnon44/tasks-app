@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
-import com.fossfloors.taskapp.ui.util.PagedTabs;
+import com.fossfloors.taskapp.ui.component.PagedTabs;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;

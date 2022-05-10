@@ -1,4 +1,4 @@
-package com.fossfloors.taskapp.ui.util;
+package com.fossfloors.taskapp.ui.component;
 
 import java.util.HashMap;
 import java.util.Map;
