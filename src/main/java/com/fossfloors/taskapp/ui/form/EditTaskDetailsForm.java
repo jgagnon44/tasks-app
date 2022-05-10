@@ -1,6 +1,7 @@
 package com.fossfloors.taskapp.ui.form;
 
 import com.fossfloors.taskapp.backend.entity.Task;
+import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.ui.util.StringToLocalDateTimeConverter;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -24,6 +25,7 @@ public class EditTaskDetailsForm extends VerticalLayout {
   private DatePicker              dateCompleted;
 
   private Binder<Task>            binder;
+  private Task                    task;
 
   public EditTaskDetailsForm() {
     this.addClassName("edit-task-detail-form");
@@ -33,7 +35,9 @@ public class EditTaskDetailsForm extends VerticalLayout {
   }
 
   public void setTask(Task task) {
+    this.task = task;
     binder.readBean(task);
+    updateEnablement();
   }
 
   private void configureView() {
@@ -89,5 +93,15 @@ public class EditTaskDetailsForm extends VerticalLayout {
     binder.forField(dateCompleted).bind("dateCompleted");
   }
   // @formatter:on
+
+  private void updateEnablement() {
+    if (task != null) {
+      type.setEnabled(task.getState() == State.OPEN);
+      priority.setEnabled(task.getState() == State.OPEN);
+      dateDue.setEnabled(task.getState() == State.OPEN);
+      dateStarted.setEnabled(task.getState() == State.OPEN);
+      dateCompleted.setEnabled(task.getState() == State.OPEN);
+    }
+  }
 
 }

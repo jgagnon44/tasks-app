@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
+import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.ui.util.PagedTabs;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -71,6 +72,7 @@ public class EditTaskForm extends VerticalLayout {
     }
 
     updateActions();
+    updateEnablement();
   }
 
   private void configureView() {
@@ -147,6 +149,13 @@ public class EditTaskForm extends VerticalLayout {
         default:
           break;
       }
+    }
+  }
+
+  private void updateEnablement() {
+    if (task != null) {
+      title.setEnabled(task.getState() == State.OPEN);
+      description.setEnabled(task.getState() == State.OPEN);
     }
   }
 

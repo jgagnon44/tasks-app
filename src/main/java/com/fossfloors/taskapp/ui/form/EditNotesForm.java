@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
+import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.ui.dialog.ConfirmDeleteDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -28,6 +29,8 @@ public class EditNotesForm extends VerticalLayout {
   private TextField           searchField;
   private Button              searchButton;
 
+  private Task                task;
+
   private Grid<TaskNote>      grid;
 
   private Dialog              editDialog;
@@ -45,7 +48,9 @@ public class EditNotesForm extends VerticalLayout {
 
   public void setTask(Task task) {
     if (task != null) {
+      this.task = task;
       grid.setItems(task.getNotes());
+      updateEnablement();
     }
   }
 
@@ -138,6 +143,15 @@ public class EditNotesForm extends VerticalLayout {
     });
 
     return grid;
+  }
+
+  private void updateEnablement() {
+    if (task != null) {
+      newButton.setEnabled(task.getState() == State.OPEN);
+      searchField.setEnabled(task.getState() == State.OPEN);
+      searchButton.setEnabled(task.getState() == State.OPEN);
+      grid.setEnabled(task.getState() == State.OPEN);
+    }
   }
 
   private void addNew(ClickEvent<?> event) {
