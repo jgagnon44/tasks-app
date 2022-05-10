@@ -161,6 +161,9 @@ public class EditTaskForm extends VerticalLayout {
 
   private void validateAndSave(boolean close) {
     try {
+      detailsForm.applyChanges();
+      notesForm.applyChanges();
+
       binder.writeBean(task);
       fireEvent(new SaveEvent(this, task, close, Optional.ofNullable(otherActions.getValue())));
     } catch (ValidationException e) {
