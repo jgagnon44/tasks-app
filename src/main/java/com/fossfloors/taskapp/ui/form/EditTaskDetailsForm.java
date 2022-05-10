@@ -9,6 +9,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 
 public class EditTaskDetailsForm extends VerticalLayout {
 
@@ -38,6 +39,10 @@ public class EditTaskDetailsForm extends VerticalLayout {
     this.task = task;
     binder.readBean(task);
     updateEnablement();
+  }
+
+  public void applyChanges() throws ValidationException {
+    binder.writeBean(task);
   }
 
   private void configureView() {

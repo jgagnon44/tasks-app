@@ -16,6 +16,7 @@ import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 
 public class EditNotesForm extends VerticalLayout {
@@ -52,6 +53,10 @@ public class EditNotesForm extends VerticalLayout {
       grid.setItems(task.getNotes());
       updateEnablement();
     }
+  }
+
+  public void applyChanges() throws ValidationException {
+    // TODO
   }
 
   private void configureView() {
