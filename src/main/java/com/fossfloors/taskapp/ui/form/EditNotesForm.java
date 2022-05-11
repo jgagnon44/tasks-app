@@ -1,12 +1,8 @@
 package com.fossfloors.taskapp.ui.form;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fossfloors.taskapp.backend.beans.ListDelta;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
@@ -25,7 +21,6 @@ import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.shared.Registration;
 
@@ -50,8 +45,6 @@ public class EditNotesForm extends VerticalLayout {
   private EditNoteDialog      editDialog;
 
   private ConfirmDeleteDialog confirmDeleteDialog;
-
-  private ListDelta<TaskNote> delta            = new ListDelta<>();
 
   public EditNotesForm() {
     this.addClassName("edit-notes-form");
@@ -80,16 +73,6 @@ public class EditNotesForm extends VerticalLayout {
       updateGrid();
       updateEnablement();
     }
-  }
-
-  public ListDelta<TaskNote> getTaskNoteDeltas() {
-    if (task != null) {
-      List<TaskNote> taskNotes = task.getNotes();
-      List<TaskNote> gridContents = grid.getDataProvider().fetch(new Query<>())
-          .collect(Collectors.toList());
-    }
-
-    return delta;
   }
 
   private void configureView() {
@@ -205,8 +188,7 @@ public class EditNotesForm extends VerticalLayout {
   }
 
   private void addNew(ClickEvent<?> event) {
-    TaskNote newNote = delta.added(new TaskNote());
-    editNote(newNote);
+    editNote(new TaskNote());
   }
 
   private void editNote(TaskNote note) {
