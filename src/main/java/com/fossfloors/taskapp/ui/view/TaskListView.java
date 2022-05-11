@@ -2,6 +2,8 @@ package com.fossfloors.taskapp.ui.view;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fossfloors.taskapp.backend.beans.TaskFilterSpec;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.service.TaskService;
@@ -38,7 +40,7 @@ public class TaskListView extends HorizontalLayout {
 
   private EditTaskForm      editForm;
 
-  public TaskListView(TaskService taskService) {
+  public TaskListView(@Autowired TaskService taskService) {
     this.taskService = taskService;
     this.setSizeFull();
     this.addClassName("task-list-view");
