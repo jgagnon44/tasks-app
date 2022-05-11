@@ -7,7 +7,6 @@ import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -27,7 +26,6 @@ public class EditNoteForm extends VerticalLayout {
   private TextArea            note;
 
   private Button              saveButton;
-  private Button              deleteButton;
   private Button              closeButton;
 
   private Binder<TaskNote>    binder;
@@ -70,14 +68,10 @@ public class EditNoteForm extends VerticalLayout {
     saveButton = new Button("Save");
     saveButton.addClickListener(event -> validateAndSave());
 
-    deleteButton = new Button("Delete");
-    deleteButton.addClickListener(event -> fireEvent(new DeleteEvent(this, taskNote)));
-
     closeButton = new Button("Close");
     closeButton.addClickListener(event -> fireEvent(new CloseEvent(this)));
-    closeButton.addClickShortcut(Key.ESCAPE);
 
-    layout.add(saveButton, deleteButton, closeButton);
+    layout.add(saveButton, closeButton);
     return layout;
   }
 
@@ -108,14 +102,6 @@ public class EditNoteForm extends VerticalLayout {
     private static final long serialVersionUID = 1L;
 
     public SaveEvent(EditNoteForm source, TaskNote note) {
-      super(source, note);
-    }
-  }
-
-  public static class DeleteEvent extends EditNoteFormEvent {
-    private static final long serialVersionUID = 1L;
-
-    public DeleteEvent(EditNoteForm source, TaskNote note) {
       super(source, note);
     }
   }
