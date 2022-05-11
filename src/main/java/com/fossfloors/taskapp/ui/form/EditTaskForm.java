@@ -163,8 +163,6 @@ public class EditTaskForm extends VerticalLayout {
     try {
       detailsForm.applyChanges();
 
-      notesForm.getTaskNoteDeltas();
-
       binder.writeBean(task);
       fireEvent(new SaveEvent(this, task, close, Optional.ofNullable(otherActions.getValue())));
     } catch (ValidationException e) {
