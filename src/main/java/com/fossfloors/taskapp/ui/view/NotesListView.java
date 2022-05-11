@@ -24,7 +24,8 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 
-@Route("notes")
+@Deprecated
+//@Route("notes")
 @CssImport("./styles/shared-styles.css")
 public class NotesListView extends VerticalLayout implements HasUrlParameter<Long> {
 
