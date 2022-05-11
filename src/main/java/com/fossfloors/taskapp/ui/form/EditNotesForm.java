@@ -10,13 +10,16 @@ import com.fossfloors.taskapp.backend.beans.ListDelta;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
+import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.ui.dialog.ConfirmDeleteDialog;
 import com.fossfloors.taskapp.ui.dialog.EditNoteDialog;
+import com.fossfloors.taskapp.util.ApplicationContextHelper;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -26,11 +29,14 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.shared.Registration;
 
+@CssImport("./styles/shared-styles.css")
 public class EditNotesForm extends VerticalLayout {
 
   private static final long   serialVersionUID = 1L;
 
   private static final Logger logger           = LoggerFactory.getLogger(EditNotesForm.class);
+
+  private TaskService         taskService;
 
   private Button              newButton;
 
@@ -50,6 +56,9 @@ public class EditNotesForm extends VerticalLayout {
   public EditNotesForm() {
     this.addClassName("edit-notes-form");
     this.setSizeFull();
+
+    taskService = ApplicationContextHelper.getBean(TaskService.class);
+
     configureView();
 
     configEditDialog();
@@ -68,7 +77,7 @@ public class EditNotesForm extends VerticalLayout {
   public void setTask(Task task) {
     if (task != null) {
       this.task = task;
-      grid.setItems(task.getNotes());
+      updateGrid();
       updateEnablement();
     }
   }
@@ -182,6 +191,10 @@ public class EditNotesForm extends VerticalLayout {
     return grid;
   }
 
+  private void updateGrid() {
+    grid.setItems(task.getNotes());
+  }
+
   private void updateEnablement() {
     if (task != null) {
       newButton.setEnabled(task.getState() == State.OPEN);
@@ -202,11 +215,13 @@ public class EditNotesForm extends VerticalLayout {
   }
 
   private void deleteNote(TaskNote note) {
-    delta.removed(note);
+    taskService.deleteNote(task, note);
+    updateGrid();
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
-    delta.changed(event.getTaskNote());
+    taskService.saveNote(task, event.getTaskNote());
+    updateGrid();
   }
 
 }
