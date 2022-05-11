@@ -1,23 +1,30 @@
 package com.fossfloors.taskapp.ui.form;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fossfloors.taskapp.backend.beans.ListDelta;
 import com.fossfloors.taskapp.backend.entity.Task;
-import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.backend.entity.Task.State;
+import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.ui.dialog.ConfirmDeleteDialog;
+import com.fossfloors.taskapp.ui.dialog.EditNoteDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.shared.Registration;
 
 public class EditNotesForm extends VerticalLayout {
 
@@ -34,9 +41,11 @@ public class EditNotesForm extends VerticalLayout {
 
   private Grid<TaskNote>      grid;
 
-  private Dialog              editDialog;
+  private EditNoteDialog      editDialog;
 
   private ConfirmDeleteDialog confirmDeleteDialog;
+
+  private ListDelta<TaskNote> delta            = new ListDelta<>();
 
   public EditNotesForm() {
     this.addClassName("edit-notes-form");
@@ -45,6 +54,15 @@ public class EditNotesForm extends VerticalLayout {
 
     configEditDialog();
     configDeleteConfirmDialog();
+
+    editDialog.getForm().addListener(EditNoteForm.SaveEvent.class, this::saveNote);
+    editDialog.getForm().addListener(EditNoteForm.CloseEvent.class, event -> editDialog.close());
+  }
+
+  @Override
+  public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
+      ComponentEventListener<T> listener) {
+    return getEventBus().addListener(eventType, listener);
   }
 
   public void setTask(Task task) {
@@ -55,8 +73,14 @@ public class EditNotesForm extends VerticalLayout {
     }
   }
 
-  public void applyChanges() throws ValidationException {
-    // TODO
+  public ListDelta<TaskNote> getTaskNoteDeltas() {
+    if (task != null) {
+      List<TaskNote> taskNotes = task.getNotes();
+      List<TaskNote> gridContents = grid.getDataProvider().fetch(new Query<>())
+          .collect(Collectors.toList());
+    }
+
+    return delta;
   }
 
   private void configureView() {
@@ -64,18 +88,26 @@ public class EditNotesForm extends VerticalLayout {
   }
 
   private void configEditDialog() {
-    editDialog = new Dialog();
-    editDialog.setSizeFull();
-    editDialog.setModal(true);
-    editDialog.setResizable(false);
+    editDialog = new EditNoteDialog();
+    editDialog.setHeight("50%");
+    editDialog.setWidth("50%");
 
-    editDialog.add(new EditNoteForm());
+    editDialog.setModal(true);
+
+    editDialog.setResizable(false);
+    editDialog.setDraggable(true);
+
+    editDialog.setCloseOnEsc(false);
+    editDialog.setCloseOnOutsideClick(false);
   }
 
   private void configDeleteConfirmDialog() {
     confirmDeleteDialog = new ConfirmDeleteDialog();
     confirmDeleteDialog.setModal(true);
     confirmDeleteDialog.setResizable(false);
+
+    confirmDeleteDialog.setCloseOnEsc(false);
+    confirmDeleteDialog.setCloseOnOutsideClick(false);
 
     confirmDeleteDialog.setMessage("Delete the selected note?");
 
@@ -160,15 +192,21 @@ public class EditNotesForm extends VerticalLayout {
   }
 
   private void addNew(ClickEvent<?> event) {
-    editNote(new TaskNote());
+    TaskNote newNote = delta.added(new TaskNote());
+    editNote(newNote);
   }
 
   private void editNote(TaskNote note) {
+    editDialog.getForm().setTaskNote(note);
     editDialog.open();
   }
 
   private void deleteNote(TaskNote note) {
-    // TODO process the deletion of the note
+    delta.removed(note);
+  }
+
+  private void saveNote(EditNoteForm.SaveEvent event) {
+    delta.changed(event.getTaskNote());
   }
 
 }
