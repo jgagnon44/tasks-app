@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
-import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.ui.component.PagedTabs;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -32,8 +31,6 @@ public class EditTaskForm extends VerticalLayout {
 
   private static final Logger  logger           = LoggerFactory.getLogger(EditTaskForm.class);
 
-  private final TaskService    taskService;
-
   private TextField            title;
   private TextArea             description;
 
@@ -52,9 +49,7 @@ public class EditTaskForm extends VerticalLayout {
     CLOSE, REOPEN, ARCHIVE, UNARCHIVE
   }
 
-  public EditTaskForm(TaskService taskService) {
-    this.taskService = taskService;
-
+  public EditTaskForm() {
     this.addClassName("edit-task-form");
     this.setSizeFull();
     configureView();
@@ -100,7 +95,7 @@ public class EditTaskForm extends VerticalLayout {
     detailsForm = new EditTaskDetailsForm();
     tabs.add("Details", detailsForm, false);
 
-    notesForm = new EditNotesForm(taskService);
+    notesForm = new EditNotesForm();
     tabs.add("Notes", notesForm, false);
   }
 

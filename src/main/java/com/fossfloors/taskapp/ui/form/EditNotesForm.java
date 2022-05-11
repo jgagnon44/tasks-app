@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.fossfloors.taskapp.backend.beans.ListDelta;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
-import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
 import com.fossfloors.taskapp.ui.dialog.ConfirmDeleteDialog;
 import com.fossfloors.taskapp.ui.dialog.EditNoteDialog;
@@ -33,8 +32,6 @@ public class EditNotesForm extends VerticalLayout {
 
   private static final Logger logger           = LoggerFactory.getLogger(EditNotesForm.class);
 
-  private final TaskService   taskService;
-
   private Button              newButton;
 
   private TextField           searchField;
@@ -50,9 +47,7 @@ public class EditNotesForm extends VerticalLayout {
 
   private ListDelta<TaskNote> delta            = new ListDelta<>();
 
-  public EditNotesForm(TaskService taskService) {
-    this.taskService = taskService;
-
+  public EditNotesForm() {
     this.addClassName("edit-notes-form");
     this.setSizeFull();
     configureView();
