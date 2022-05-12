@@ -1,8 +1,5 @@
 package com.fossfloors.taskapp.ui.form;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
@@ -28,8 +25,6 @@ import com.vaadin.flow.shared.Registration;
 public class EditNotesForm extends VerticalLayout {
 
   private static final long   serialVersionUID = 1L;
-
-  private static final Logger logger           = LoggerFactory.getLogger(EditNotesForm.class);
 
   private TaskService         taskService;
 
@@ -57,7 +52,10 @@ public class EditNotesForm extends VerticalLayout {
     configEditDialog();
     configDeleteConfirmDialog();
 
-    editDialog.getForm().addListener(EditNoteForm.SaveEvent.class, this::saveNote);
+    editDialog.getForm().addListener(EditNoteForm.SaveEvent.class, event -> {
+      saveNote(event);
+      editDialog.close();
+    });
     editDialog.getForm().addListener(EditNoteForm.CloseEvent.class, event -> editDialog.close());
   }
 
@@ -109,7 +107,6 @@ public class EditNotesForm extends VerticalLayout {
 
       // Delete selected note.
       grid.getSelectedItems().forEach(note -> {
-        logger.info("delete: {}", note);
         deleteNote(note);
       });
     });
@@ -160,7 +157,6 @@ public class EditNotesForm extends VerticalLayout {
 
     menu.addItem("Edit", event -> {
       event.getItem().ifPresent(note -> {
-        logger.info("editing note: {}", note);
         editNote(note);
       });
     });
