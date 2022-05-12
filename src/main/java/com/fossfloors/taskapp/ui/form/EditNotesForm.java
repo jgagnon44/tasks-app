@@ -3,6 +3,7 @@ package com.fossfloors.taskapp.ui.form;
 import com.fossfloors.taskapp.backend.entity.Task;
 import com.fossfloors.taskapp.backend.entity.Task.State;
 import com.fossfloors.taskapp.backend.entity.TaskNote;
+import com.fossfloors.taskapp.backend.service.TaskNoteService;
 import com.fossfloors.taskapp.backend.service.TaskService;
 import com.fossfloors.taskapp.ui.dialog.ConfirmDeleteDialog;
 import com.fossfloors.taskapp.ui.dialog.EditNoteDialog;
@@ -27,6 +28,7 @@ public class EditNotesForm extends VerticalLayout {
   private static final long   serialVersionUID = 1L;
 
   private TaskService         taskService;
+  private TaskNoteService     noteService;
 
   private Button              newButton;
 
@@ -46,6 +48,7 @@ public class EditNotesForm extends VerticalLayout {
     this.setSizeFull();
 
     taskService = ApplicationContextHelper.getBean(TaskService.class);
+    noteService = ApplicationContextHelper.getBean(TaskNoteService.class);
 
     configureView();
 
@@ -195,7 +198,8 @@ public class EditNotesForm extends VerticalLayout {
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
-    taskService.saveNote(task, event.getTaskNote());
+    TaskNote note = noteService.save(event.getTaskNote());
+    taskService.saveNote(task, note);
     updateGrid();
   }
 
