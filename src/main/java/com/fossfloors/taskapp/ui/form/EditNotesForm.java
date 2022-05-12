@@ -137,6 +137,7 @@ public class EditNotesForm extends VerticalLayout {
     grid = new Grid<>();
     grid.addClassName("task-notes-grid");
 
+    grid.addColumn(TaskNote::getId).setHeader("ID");
     grid.addColumn(TaskNote::getNote).setHeader("Note");
 
     grid.addColumn(new LocalDateTimeRenderer<>(TaskNote::getDateCreated, "MM/dd/yyyy HH:mm:ss"))
