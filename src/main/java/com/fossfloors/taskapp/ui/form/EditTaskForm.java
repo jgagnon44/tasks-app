@@ -22,6 +22,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.converter.StringToLongConverter;
 import com.vaadin.flow.shared.Registration;
 
 @CssImport("./styles/shared-styles.css")
@@ -31,6 +32,7 @@ public class EditTaskForm extends VerticalLayout {
 
   private static final Logger  logger           = LoggerFactory.getLogger(EditTaskForm.class);
 
+  private TextField            taskId;
   private TextField            title;
   private TextArea             description;
 
@@ -80,6 +82,10 @@ public class EditTaskForm extends VerticalLayout {
     pageTitle.setText("Edit Task");
     pageTitle.addClassName("page-title");
 
+    taskId = new TextField("ID");
+    taskId.addClassName("task-id");
+    taskId.setReadOnly(true);
+
     title = new TextField("Title");
     title.addClassName("task-title");
 
@@ -89,7 +95,7 @@ public class EditTaskForm extends VerticalLayout {
     PagedTabs tabs = new PagedTabs(this);
     tabs.getContent().addClassName("paged-tabs-titles");
 
-    add(pageTitle, configButtons(), title, description, tabs);
+    add(pageTitle, configButtons(), taskId, title, description, tabs);
     setDefaultHorizontalComponentAlignment(Alignment.START);
 
     detailsForm = new EditTaskDetailsForm();
@@ -126,6 +132,10 @@ public class EditTaskForm extends VerticalLayout {
   private void bindData() {
     binder = new Binder<>(Task.class);
   
+    binder.forField(taskId)
+      .withConverter(new StringToLongConverter("Invalid value"))
+      .bind("id");
+    
     binder.forField(title)
       .asRequired("Title required")
       .bind("title");
