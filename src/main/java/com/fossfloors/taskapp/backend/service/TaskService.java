@@ -23,8 +23,8 @@ public class TaskService {
 
   private TaskRepository      repo;
 
-  public TaskService(TaskRepository taskRepo) {
-    this.repo = taskRepo;
+  public TaskService(TaskRepository repo) {
+    this.repo = repo;
   }
 
   public Optional<Task> findById(long id) {
