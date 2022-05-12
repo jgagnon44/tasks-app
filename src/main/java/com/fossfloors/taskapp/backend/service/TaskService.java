@@ -48,13 +48,13 @@ public class TaskService {
     taskRepo.delete(task);
   }
 
-  public void save(Task task) {
+  public Task save(Task task) {
     if (task == null) {
       logger.warn("Task is null.");
-      return;
+      return null;
     }
 
-    taskRepo.save(task);
+    return taskRepo.save(task);
   }
 
   public void saveNote(Task task, TaskNote note) {
