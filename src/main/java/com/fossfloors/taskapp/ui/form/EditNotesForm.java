@@ -149,10 +149,6 @@ public class EditNotesForm extends VerticalLayout {
       col.setResizable(true);
     });
 
-    // grid.asSingleSelect().addValueChangeListener(event -> {
-    // editNote(event.getValue());
-    // });
-
     GridContextMenu<TaskNote> menu = grid.addContextMenu();
 
     menu.addItem("Edit", event -> {
