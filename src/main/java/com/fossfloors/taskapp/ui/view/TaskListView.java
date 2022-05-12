@@ -101,6 +101,7 @@ public class TaskListView extends HorizontalLayout {
     grid = new Grid<>();
     grid.addClassName("tasks-grid");
 
+    grid.addColumn(Task::getId).setHeader("ID");
     grid.addColumn(Task::getTitle).setHeader("Title");
     grid.addColumn(Task::getState).setHeader("State");
     grid.addColumn(Task::getPriority).setHeader("Priority");
