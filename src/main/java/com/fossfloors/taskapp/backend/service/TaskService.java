@@ -21,22 +21,22 @@ public class TaskService {
 
   private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-  private TaskRepository      taskRepo;
+  private TaskRepository      repo;
 
   public TaskService(TaskRepository taskRepo) {
-    this.taskRepo = taskRepo;
+    this.repo = taskRepo;
   }
 
   public Optional<Task> findById(long id) {
-    return taskRepo.findById(id);
+    return repo.findById(id);
   }
 
   public List<Task> findAll() {
-    return taskRepo.findAll();
+    return repo.findAll();
   }
 
   public List<Task> filter(TaskFilterSpec filter) {
-    return taskRepo.filter(filter);
+    return repo.filter(filter);
   }
 
   public void delete(Task task) {
@@ -45,7 +45,7 @@ public class TaskService {
       return;
     }
 
-    taskRepo.delete(task);
+    repo.delete(task);
   }
 
   public Task save(Task task) {
@@ -54,7 +54,7 @@ public class TaskService {
       return null;
     }
 
-    return taskRepo.save(task);
+    return repo.save(task);
   }
 
   public void saveNote(Task task, TaskNote note) {
@@ -72,7 +72,7 @@ public class TaskService {
 
   @PostConstruct
   public void populateTestData() {
-    if (taskRepo.count() == 0) {
+    if (repo.count() == 0) {
       Task task = null;
       TaskNote note = null;
 
@@ -93,7 +93,7 @@ public class TaskService {
       note.setNote("note-2");
       task.getNotes().add(note);
 
-      taskRepo.save(task);
+      repo.save(task);
 
       // Task 2
       task = new Task("Task-2");
@@ -101,7 +101,7 @@ public class TaskService {
       task.setType(Task.Type.ONE_TIME);
       task.setState(Task.State.CLOSED);
 
-      taskRepo.save(task);
+      repo.save(task);
     }
   }
 
