@@ -28,7 +28,7 @@ public class EditNotesForm extends VerticalLayout {
   private static final long   serialVersionUID = 1L;
 
   private TaskService         taskService;
-  private TaskNoteService     noteService;
+  // private TaskNoteService noteService;
 
   private Button              newButton;
 
@@ -48,7 +48,7 @@ public class EditNotesForm extends VerticalLayout {
     this.setSizeFull();
 
     taskService = ApplicationContextHelper.getBean(TaskService.class);
-    noteService = ApplicationContextHelper.getBean(TaskNoteService.class);
+    // noteService = ApplicationContextHelper.getBean(TaskNoteService.class);
 
     configureView();
 
@@ -198,8 +198,8 @@ public class EditNotesForm extends VerticalLayout {
   }
 
   private void saveNote(EditNoteForm.SaveEvent event) {
-    TaskNote note = noteService.save(event.getTaskNote());
-    taskService.saveNote(task, note);
+    // TaskNote note = noteService.save(event.getTaskNote());
+    taskService.saveNote(task, event.getTaskNote());
     updateGrid();
   }
 
